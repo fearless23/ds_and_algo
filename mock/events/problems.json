@@ -1,0 +1,8 @@
+{
+  "category": "PROBLEMS",
+  "L1": "EASY",
+  "L2": "MATCHING_BRACKETS",
+  "payload": {
+    "str": "{()}[]"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "category": "DATA_STRUCTURES",
+  "L1": "STACK",
+  "L2": "STACK",
+  "test": "WITH_SLL",
+  "payload": {
+    "distance": 4
+  }
+}
