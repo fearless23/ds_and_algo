@@ -8,13 +8,13 @@ export const STACK = {
     const s = stack_with_sll(); ;
     s.push('Banana');
     s.push('Grapes');
-    s.print(logger);
+    s.print();
     const a = s.pop();
     logger.info(`popped ${a}`);
-    s.print(logger);
+    s.print();
     s.push('Mango');
     s.push('Apple');
-    s.print(logger);
+    s.print();
     const b = s.pop();
     logger.info(`popped ${b}`);
     s.print(logger);

@@ -4,7 +4,9 @@ import { handler } from '../data';
 
 (async () => {
   const result = await handler(event);
-  console.info('\n----- RESULT -----');
-  console.info(JSON.stringify(result, null, 2));
-  console.log('------------------');
+  if (event.show) {
+    console.info('\n----- RESULT -----');
+    console.info(JSON.stringify(result, null, 2));
+    console.log('------------------');
+  }
 })();

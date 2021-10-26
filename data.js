@@ -1,8 +1,8 @@
-import { TYPES } from './src';
+import { DATA_STRUCTURES } from './src/play';
 import pino from 'pino';
 
-const logger = pino({
-  base: { },
+const base_logger = pino({
+  base: {},
   formatters: {
     level (label, number) {
       return { level: label || number };
@@ -15,18 +15,18 @@ const logger = pino({
   prettyPrint: true,
 });
 
-export const handler = async (event) => {
+export const handler = async (event = {}) => {
   const output = { event };
-  const show = event.show;
+  const { category, type } = event;
+  const logger = base_logger.child({});
+
   try {
-    const category = event.category;
-    const L1 = event.L1; // ds or level
-    const L2 = event.L2; // type or type
-    const func = TYPES[category][L1][L2];
-    if (!func) throw new Error('unknown event L1,L2 key');
-    output.result = func(logger, event.payload);
+    const func = DATA_STRUCTURES[category][type];
+    if (!func) throw new Error('unknown event.category or event.type key');
+    output.result = func(console, event.payload);
   } catch (error) {
     output.error = error.message;
+    logger.error(error, handler.name);
   }
-  return show && output;
+  return output;
 };

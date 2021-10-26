@@ -22,7 +22,8 @@ class Stack {
 
   print (logger, name = 'stack') {
     const nodes = this.stack.items();
-    logger.info(`${name}: \n${nodes.join('\n')}`);
+    if (logger) logger.info(`${name}: \n${nodes.join('\n')}`);
+    else console.log(`${name}: \n${nodes.join('\n')}`);
   }
 }
 
