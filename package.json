@@ -2,13 +2,7 @@
 	"name": "data_structures",
 	"version": "1.0.0",
 	"description": "Data Structures in JS",
-	"keywords": [
-		"DS",
-		"Queue",
-		"Priority",
-		"Queue",
-		"BST"
-	],
+	"keywords": ["DS", "Queue", "Priority", "Queue", "BST"],
 	"author": "Jaspreet Singh",
 	"dependencies": {
 		"lodash": "^4.17.21"
@@ -43,7 +37,7 @@
 		"test": "vitest run --no-threads",
 		"test:coverage": "vitest run --no-threads --coverage",
 		"test:ui": "vitest --no-threads --coverage --ui",
-		"dev": "tsx dev/index.ts"
+		"dev": "tsx dev/index.ts -- --trace-warnings"
 	},
 	"volta": {
 		"node": "18.16.0",

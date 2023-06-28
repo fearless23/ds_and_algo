@@ -33,7 +33,6 @@ class BinaryHeap {
 		const tmp = this.#getNode(i);
 		this.#heap[i] = this.#getNode(j);
 		this.#heap[j] = tmp;
-		console.log("SWAPPED");
 	}
 
 	#bubbleUp(i: number) {
