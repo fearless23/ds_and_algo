@@ -4,17 +4,16 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Debug Lambda",
+      "name": "Play",
       "skipFiles": [
         "<node_internals>/**"
       ],
       "outputCapture": "std",
       "console": "integratedTerminal",
+      "runtimeExecutable": "pnpm",
       "runtimeArgs": [
-        "-r",
-        "esm"
+        "dev"
       ],
-      "program": "${workspaceFolder}/mock/debug.js"
     }
   ]
 }

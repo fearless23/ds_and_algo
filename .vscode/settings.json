@@ -1,7 +1,16 @@
 {
-  "eslint.alwaysShowStatus": true,
-  "eslint.format.enable": true,
+  "[typescript]": {
+    "editor.defaultFormatter": "rome.rome"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "rome.rome"
+  },
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
-  }
+    "source.fixAll": true,
+    "source.organizeImports.rome": true
+  },
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "rome.rome",
+  "typescript.tsdk": "./node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true
 }

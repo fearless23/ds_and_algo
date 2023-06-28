@@ -1,0 +1,21 @@
+{
+	"compilerOptions": {
+		"lib": [
+			"ES2023"
+		],
+		"baseUrl": ".",
+		"target": "ES2022",
+		"module": "Node16",
+		"strict": true,
+		"esModuleInterop": true,
+		"removeComments": true,
+		"noUncheckedIndexedAccess": true,
+		"verbatimModuleSyntax": true,
+		"isolatedModules": true,
+		"skipLibCheck": true,
+		"forceConsistentCasingInFileNames": true,
+		"incremental": true,
+		"noEmit": true,
+		"declaration": false
+	}
+}
