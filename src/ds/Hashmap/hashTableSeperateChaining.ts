@@ -10,18 +10,21 @@ export class HashTableSeperateChaining<T> {
 	maxAllowedBucketSize = 5;
 	table: Bucket<T>[] = [];
 
+	constructor(capacity = 8) {
+		this.capacity = capacity;
+	}
+
 	normalizeHash(key: string) {
 		const hash = hashString(key);
 		return normalizeNumber(hash, this.capacity);
 	}
 
-	increaseCapacity() {
+	#resizeTable() {
+		console.log("---RESIZING BUCKET---");
 		this.capacity = this.capacity * 2;
-	}
-
-	#reNormalize() {
-		const newTable = new HashTableSeperateChaining<T>();
+		const newTable = new HashTableSeperateChaining<T>(this.capacity);
 		for (const item of this.table) {
+			if (item == null) continue;
 			let pointer = item.head;
 			while (pointer) {
 				newTable.add(pointer.data.key, pointer.data.value);
@@ -29,6 +32,7 @@ export class HashTableSeperateChaining<T> {
 			}
 		}
 		this.table = newTable.table;
+		this.maxBucketSize = newTable.maxBucketSize;
 	}
 
 	#addItem(key: string, value: T) {
@@ -54,8 +58,7 @@ export class HashTableSeperateChaining<T> {
 	add(key: string, value: T) {
 		this.#addItem(key, value);
 		if (this.maxBucketSize > this.maxAllowedBucketSize) {
-			this.increaseCapacity();
-			this.#reNormalize();
+			this.#resizeTable();
 		}
 	}
 
