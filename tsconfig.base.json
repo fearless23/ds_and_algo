@@ -1,8 +1,6 @@
 {
 	"compilerOptions": {
-		"lib": [
-			"ES2023"
-		],
+		"lib": ["ES2023"],
 		"baseUrl": ".",
 		"target": "ES2022",
 		"module": "Node16",
