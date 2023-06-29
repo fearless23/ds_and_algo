@@ -160,6 +160,17 @@ export class SinglyLinkedList<T> {
 	removeAtIndex(index: number) {
 		return this.#removeNodeAtIndex(index);
 	}
+
+	findByValue<K>(value: K, finder: (node: Node<T>, value: K) => boolean) {
+		let pointer = this.head;
+		while (pointer != null) {
+			const found = finder(pointer, value);
+			if (found) return pointer;
+			pointer = pointer.next;
+		}
+		return pointer;
+	}
+
 	items() {
 		return this.#getNodes();
 	}

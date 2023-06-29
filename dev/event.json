@@ -1,4 +1,4 @@
 {
-	"type": "PRIORITY_QUEUE_WITH_BH",
+	"type": "HT",
 	"payload": {}
 }

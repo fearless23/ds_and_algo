@@ -1,18 +1,6 @@
 {
 	"files": {
-		"ignore": [
-			".github",
-			".husky",
-			".vscode",
-			"ci",
-			"coverage",
-			"docs",
-			"node_modules",
-			"build",
-			"scripts",
-			"typedocs",
-			"index.js"
-		]
+		"ignore": [".github", ".husky", ".vscode", "node_modules", "build", "index.js"]
 	},
 	"formatter": {
 		"lineWidth": 100
