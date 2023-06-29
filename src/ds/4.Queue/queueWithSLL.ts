@@ -1,24 +1,25 @@
 import { logger } from "src/lib/logger.js";
-import type { Queue } from "./types.js";
-import { singlyLinkedList } from "../2.LinkedList/singlyLinkedList.js";
-import { DEFAULT_NODE_TO_STRING, type DSParams } from "../types.js";
+import type { DSParams, Queue } from "../types.js";
+import { SinglyLinkedList } from "../2.LinkedList/index.js";
 
-class QueueWithSLL<T> {
-	queue = singlyLinkedList<T>();
+export type QueueWithSLLParams<T> = DSParams<T>;
+export class QueueWithSLL<T> {
+	#state: SinglyLinkedList<T>;
 
-	#printParams: DSParams<T>;
-	constructor(printParams: DSParams<T>) {
-		this.#printParams = printParams;
+	#nodeToString: QueueWithSLLParams<T>["nodeToString"];
+	constructor(params: QueueWithSLLParams<T>) {
+		this.#nodeToString = params.nodeToString;
+		this.#state = new SinglyLinkedList<T>({ nodeToString: params.nodeToString });
 	}
 
 	send(data: T) {
-		this.queue.addTail(data);
+		this.#state.addTail(data);
 	}
 
 	take(count = 1) {
 		const items: T[] = [];
 		for (let j = 0; j < count; j++) {
-			const item = this.queue.removeHead();
+			const item = this.#state.removeHead();
 			if (item === null) break;
 			else items.push(item);
 		}
@@ -26,21 +27,20 @@ class QueueWithSLL<T> {
 	}
 
 	peek() {
-		const d = this.queue.peek();
+		const d = this.#state.peek();
 		const f = d.head?.data ?? null;
 		return { head: f, size: d.size };
 	}
 
 	print() {
-		const nodes = this.queue.items().map(this.#printParams.nodeDataToString);
+		const nodes = this.#state.items().map(this.#nodeToString);
 		logger.info(`QUEUE: (Front): ${nodes.join(" --> ")} (Back)`);
 	}
 }
 
-export const queueWithSLL = <T>(params: Partial<DSParams<T>> = {}): Queue<T> => {
-	const q = new QueueWithSLL<T>({
-		nodeDataToString: DEFAULT_NODE_TO_STRING,
-		...params,
-	});
-	return q;
+export const queueWithSLL = <T>(params: QueueWithSLLParams<T>): Queue<T> => {
+	return new QueueWithSLL<T>(params);
 };
+
+export const queueWithSLLString = () => queueWithSLL<string>({ nodeToString: (i) => i });
+export const queueWithSLLNumber = () => queueWithSLL<number>({ nodeToString: (i) => `${i}` });

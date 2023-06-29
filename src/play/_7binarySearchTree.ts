@@ -1,13 +1,10 @@
-import {
-	bstWithArray,
-	numberBST as bstWithNode,
-	type OrderType,
-} from "../ds/7.BinarySearchTree/index.js";
+import type { OrderType } from "../ds/types.js";
+import { bstWithArray, bstWithNodeNumber } from "../ds/7.BinarySearchTree/index.js";
 
 const orders: OrderType[] = ["PRE_ORDER", "IN_ORDER", "POST_ORDER", "LEVEL_ORDER"];
 
 const advanced = () => {
-	const baseBST = bstWithNode();
+	const baseBST = bstWithNodeNumber();
 	baseBST.insertValues([
 		90, 1, 1200, 7, 20, 33, 2, 25, 6, 100, 3, 4, 890, 817, 86, 1987, 5, 15, 10, 4,
 	]);
@@ -15,7 +12,7 @@ const advanced = () => {
 	const childOrders: { [key2: string]: string } = {};
 	for (const type of orders) {
 		const order = baseBST.getOrder(type);
-		const newBST = bstWithNode();
+		const newBST = bstWithNodeNumber();
 		newBST.insertValues(order);
 		const orderString = order.join(",");
 		// @ts-ignore
@@ -41,18 +38,18 @@ ${matches.join("\n")}
 
 export const TREE = {
 	BST_WITH_ARRAY: () => {
-		const bst = bstWithArray({ duplicateAllowed: true });
+		const bst = bstWithArray();
 		bst.insertValues([1, 2, 3, 4, 5, 6]);
 		bst.print();
 	},
 	BINARY_SEARCH_TREE_SAMPLE: () => {
 		// This is to show efficiency over bstWithArray
-		const bst = bstWithNode();
+		const bst = bstWithNodeNumber();
 		bst.insertValues([1, 2, 3, 4, 5, 6]);
 		bst.print();
 	},
 	BINARY_SEARCH_TREE: () => {
-		const bst = bstWithNode();
+		const bst = bstWithNodeNumber();
 		bst.insertValues([7, 20, 5, 15, 10, 4, 33, 2, 25, 6]);
 		bst.printOrder("PRE_ORDER");
 		bst.printOrder("IN_ORDER");
@@ -63,7 +60,7 @@ export const TREE = {
 		advanced();
 	},
 	EXPERIMENT: () => {
-		const bst = bstWithNode();
+		const bst = bstWithNodeNumber();
 		bst.insertValues([7, 2, 9, 0, 3]);
 		bst.printOrder("PRE_ORDER");
 		bst.printOrder("IN_ORDER");

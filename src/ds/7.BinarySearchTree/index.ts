@@ -1,2 +1,7 @@
-export { bstWithArray } from "./bstWithArray.js";
-export { bstWithNode, numberBST, type OrderType } from "./bstWithNode.js";
+export { BinarySearchTreeWithArray, bstWithArray } from "./bstWithArray.js";
+export {
+	BinarySearchTree,
+	bstWithNodeNumber,
+	bstWithNodeString,
+	type BinarySearchTreeParams,
+} from "./bstWithNode.js";

@@ -1,5 +1,6 @@
 import { logger } from "src/lib/logger.js";
 import { queueWithArray } from "../4.Queue/index.js";
+import type { CompareFunction, DSParams, FindFunction, OrderType } from "../types.js";
 
 class Node<T> {
 	data: T;
@@ -9,44 +10,35 @@ class Node<T> {
 		this.data = data;
 	}
 }
+const createNode = <T>(data: T) => new Node(data);
 
-/**
- * Compare function tells if a > b in some manner
- * - true: a > b
- * - false: a <= b
- */
-type CompareFunction<T> = (a: T, b: T) => boolean;
-type FindFunction<T> = (a: T, b: T) => boolean;
-type BinarySearchTreeParams<T> = {
+export type BinarySearchTreeParams<T> = DSParams<T> & {
 	duplicateAllowed: boolean;
 	compare: CompareFunction<T>;
 	find: FindFunction<T>;
 };
-export type OrderType = "PRE_ORDER" | "IN_ORDER" | "POST_ORDER" | "LEVEL_ORDER";
-const createNode = <T>(data: T) => new Node(data);
 
-class BinarySearchTree<T> {
+export class BinarySearchTree<T> {
 	root: Node<T> | null = null;
 
 	duplicateAllowed: boolean;
+	#nodeToString: BinarySearchTreeParams<T>["nodeToString"];
 	#compare: CompareFunction<T>;
-	#findFunction: FindFunction<T>;
+	#find: FindFunction<T>;
 	constructor(params: BinarySearchTreeParams<T>) {
 		this.duplicateAllowed = params.duplicateAllowed;
 		this.#compare = params.compare;
-		this.#findFunction = params.find;
+		this.#nodeToString = params.nodeToString;
+		this.#find = params.find;
 	}
 
 	#decideAndInsert(start: Node<T>, data: T) {
-		// 1. decide the direction to go in
-		const dataBigger = this.#compare(data, start.data);
-		const dir = dataBigger ? "right" : "left";
-		const node = start[dir];
-		if (node) {
-			this.#decideAndInsert(node, data);
-		} else {
-			start[dir] = createNode(data);
-			return; // EXIT
+		const direction = this.#compare(data, start.data) > 0 ? "right" : "left";
+		const node = start[direction];
+		if (node) this.#decideAndInsert(node, data);
+		else {
+			start[direction] = createNode(data);
+			return;
 		}
 	}
 
@@ -60,7 +52,7 @@ class BinarySearchTree<T> {
 	}
 
 	#findFrom(start: Node<T>, data: T): Node<T> | null {
-		const found = this.#findFunction(start.data, data);
+		const found = this.#find(start.data, data);
 		if (found) return start;
 		// 1. pick a direction
 		const dataBigger = this.#compare(data, start.data);
@@ -96,7 +88,9 @@ class BinarySearchTree<T> {
 
 	#levelOrder(start: Node<T> | null, nodes: T[]) {
 		if (start === null) return;
-		const queue = queueWithArray<Node<T>>();
+		const queue = queueWithArray<Node<T>>({
+			nodeToString: (i) => this.#nodeToString(i.data),
+		});
 		queue.send(start);
 
 		while (queue.peek().size !== 0) {
@@ -107,7 +101,7 @@ class BinarySearchTree<T> {
 		}
 	}
 
-	find(data: T) {
+	findByValue(data: T) {
 		if (!this.root) return null;
 		return this.#findFrom(this.root, data);
 	}
@@ -148,19 +142,21 @@ class BinarySearchTree<T> {
 	}
 }
 
-type BSTWithNodeParams<T> = Omit<BinarySearchTreeParams<T>, "duplicateAllowed"> & {
-	duplicateAllowed?: boolean;
-};
-
-export const bstWithNode = <T>(params: BSTWithNodeParams<T>) => {
-	const BST = new BinarySearchTree({ duplicateAllowed: false, ...params });
-	return BST;
-};
-
-export const numberBST = (duplicateAllowed = false) => {
-	const bst = new BinarySearchTree<number>({
+export const bstWithNodeString = (duplicateAllowed = false) => {
+	const bst = new BinarySearchTree<{ data: string; value: number }>({
+		nodeToString: (i) => `${i}`,
 		duplicateAllowed,
-		compare: (a: number, b: number) => a > b,
+		compare: (a, b) => a.value - b.value,
+		find: (a, b) => a.data === b.data,
+	});
+	return bst;
+};
+
+export const bstWithNodeNumber = (duplicateAllowed = false) => {
+	const bst = new BinarySearchTree<number>({
+		nodeToString: (i) => `${i}`,
+		duplicateAllowed,
+		compare: (a: number, b: number) => a - b,
 		find: (a: number, b: number) => a === b,
 	});
 	return bst;

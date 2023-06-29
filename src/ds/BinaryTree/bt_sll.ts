@@ -1,7 +1,7 @@
-class DataNode<T> {
+class Node<T> {
 	data: T;
-	left: DataNode<T>;
-	right: DataNode<T>;
+	left: Node<T> | null;
+	right: Node<T> | null;
 	constructor(data: T) {
 		this.data = data;
 		this.left = null;
@@ -10,13 +10,13 @@ class DataNode<T> {
 }
 
 class BinaryTreeSLL<T> {
-	root: DataNode<T>;
+	root: Node<T> | null;
 	constructor() {
 		this.root = null;
 	}
 
 	insert(data: T) {
-		const newNode = new DataNode(data);
+		const newNode = new Node(data);
 
 		// Empty Tree
 		if (!this.root) {
@@ -28,7 +28,7 @@ class BinaryTreeSLL<T> {
 		this.addNode(this.root, newNode);
 	}
 
-	addNode(startNode, newNode) {
+	addNode(startNode: Node<T>, newNode: Node<T>) {
 		if (newNode.data <= startNode.data) {
 			if (startNode.left) {
 				this.addNode(startNode.left, newNode);

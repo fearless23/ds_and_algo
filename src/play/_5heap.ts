@@ -1,4 +1,4 @@
-import { heapVariant, binaryHeap } from "../ds/5.Heap/index.js";
+import { heapVariant, binaryHeapNumber as binaryHeap } from "../ds/5.BinaryHeap/index.js";
 
 export const HEAP = {
 	// BINARY_HEAP: () => {
@@ -21,10 +21,18 @@ export const HEAP = {
 	// 	bh.showIndexMap(logger);
 	// },
 	BINARY_HEAP: () => {
-		const bh = binaryHeap(heapVariant.MIN);
-		bh.addMany([2, 3, 4, 8, 6, 9, 1500, 900, 10, 7, 9]);
+		const bh = binaryHeap(heapVariant.MAX);
+
+		console.log("---1---");
+		bh.addMany([2, 5, 3]);
 		bh.print();
-		bh.removeAtIndex(1);
+		console.log("removed", bh.removeAtIndex(0));
+		bh.print();
+
+		console.log("---2---");
+		bh.addMany([1, 5, 3, 10]);
+		bh.print();
+		console.log("removed", bh.removeAtIndex(0));
 		bh.print();
 	},
 };

@@ -1,11 +1,8 @@
-import { doublyLinkedList, singlyLinkedList } from "../ds/2.LinkedList/index.js";
-// import { singlyLinkedList } from "../ds/2.LinkedList/singlyLinkedList.js";
-
-// const { single_linked_list } = DATA_STRUCTURES.LINKED_LIST;
+import { doublyLinkedListNumber, singlyLinkedListNumber } from "../ds/2.LinkedList/index.js";
 
 export const LINKED_LIST = {
 	SINGLE_LINKED_LIST: () => {
-		const sll = singlyLinkedList<number>();
+		const sll = singlyLinkedListNumber();
 		sll.addTail(0);
 		sll.print();
 		sll.addTail(1);
@@ -20,7 +17,7 @@ export const LINKED_LIST = {
 		sll.print();
 	},
 	DOUBLE_LINKED_LIST: () => {
-		const sll = doublyLinkedList<number>();
+		const sll = doublyLinkedListNumber();
 		sll.addTail(0);
 		sll.print();
 		sll.addTail(1);

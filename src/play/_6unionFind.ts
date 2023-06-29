@@ -1,5 +1,5 @@
 import { logger } from "src/lib/logger.js";
-import { unionFind } from "../ds/6.UnionFind/index.js";
+import { unionFindString } from "../ds/6.UnionFind/index.js";
 
 const NODES = {
 	A: 0,
@@ -21,7 +21,7 @@ const NAMES = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L"];
 export const UNION_FIND = {
 	UNION_FIND: () => {
 		try {
-			const uf = unionFind(NAMES);
+			const uf = unionFindString(NAMES);
 			uf.union(NODES.C, NODES.D);
 			uf.union(NODES.B, NODES.C);
 			uf.union(NODES.A, NODES.B);

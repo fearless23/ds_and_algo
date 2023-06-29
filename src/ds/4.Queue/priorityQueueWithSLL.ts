@@ -1,27 +1,31 @@
-import type { PriorityQueue } from "./types.js";
 import { logger } from "src/lib/logger.js";
-import type { DataWithPriority } from "../2.LinkedList/index.js";
-import { DEFAULT_PNODE_TO_STRING, type DSParams } from "../types.js";
-import { singlyLinkedListWithPriority } from "../2.LinkedList/index.js";
+import { PrioritySinglyLinkedList } from "../2.LinkedList/index.js";
+import type { DSParams, Queue, CompareFunction, DataWithPriority, QueueFS } from "../types.js";
 
-class PriorityQueueWithSLL<T> {
-	queue = singlyLinkedListWithPriority<T>();
-	#printParams: DSParams<DataWithPriority<T>>;
+export type PriorityQueueWithSLLParams<T> = DSParams<T> & {
+	compare: CompareFunction<T>;
+};
 
-	constructor(params: DSParams<DataWithPriority<T>>) {
-		this.#printParams = params;
+export class PriorityQueueWithSLL<T> implements Queue<T> {
+	#state: PrioritySinglyLinkedList<T>;
+
+	#nodeToString: PriorityQueueWithSLLParams<T>["nodeToString"];
+	constructor(params: PriorityQueueWithSLLParams<T>) {
+		this.#nodeToString = params.nodeToString;
+		this.#state = new PrioritySinglyLinkedList<T>({
+			nodeToString: params.nodeToString,
+			compare: params.compare,
+		});
 	}
 
-	// Node with highest priority is added to front
-	// For lowest priority to be added to front: multiply priority by -1
-	send(data: T, priority: number) {
-		this.queue.addWithPriority({ data, priority });
+	send(data: T) {
+		this.#state.addWithPriority(data);
 	}
 
 	take(i = 1) {
 		const items = [];
 		for (let j = 0; j < i; j++) {
-			const item = this.queue.removeHead();
+			const item = this.#state.removeHead();
 			if (item === null) break;
 			else items.push(item);
 		}
@@ -29,24 +33,42 @@ class PriorityQueueWithSLL<T> {
 	}
 
 	peek() {
-		const d = this.queue.peek();
+		const d = this.#state.peek();
 		const f = d.head?.data ?? null;
 		return { head: f, size: d.size };
 	}
 
 	print() {
-		const nodes = this.queue.items().map(this.#printParams.nodeDataToString);
+		const nodes = this.#state.items().map(this.#nodeToString);
 		logger.info(`PRIORITY_QUEUE: (Front): ${nodes.join(" -- ")} :(Back)`);
 	}
 }
 
-// Instead of passing compareFunction, use similar function to pass a priority as number to Data;
-export const priorityQueueWithSLL = <T>(
-	params: Partial<DSParams<DataWithPriority<T>>> = {},
-): PriorityQueue<T> => {
-	const sll = new PriorityQueueWithSLL<T>({
-		nodeDataToString: DEFAULT_PNODE_TO_STRING,
-		...params,
+export class PriorityQueueWithSLLFixedStructure<T> extends PriorityQueueWithSLL<
+	DataWithPriority<T>
+> {
+	sendPriority(data: T, priority: number) {
+		this.send({ data, priority });
+	}
+}
+
+export const priorityQueueWithSLLStringFS = (): QueueFS<string> => {
+	return new PriorityQueueWithSLLFixedStructure<string>({
+		nodeToString: (i) => `${i.data}(${i.priority})`,
+		compare: (data, node) => data.priority - node.priority,
 	});
-	return sll;
+};
+
+export const priorityQueueWithSLLNumberFS = (): QueueFS<number> => {
+	return new PriorityQueueWithSLLFixedStructure<number>({
+		nodeToString: (i) => `${i.data}(${i.priority})`,
+		compare: (data, node) => data.priority - node.priority,
+	});
+};
+
+export const priorityQueueWithSLLNumber = (): Queue<number> => {
+	return new PriorityQueueWithSLL<number>({
+		nodeToString: (i) => `${i}`,
+		compare: (data: number, node: number) => data - node,
+	});
 };

@@ -1,22 +1,28 @@
 import { logger } from "src/lib/logger.js";
+import type { DSParams } from "../types.js";
 
-type Data = { data: string; parentIdx: number };
+type Node<T> = { data: T; parentIdx: number };
+export type UnionFindParams<T> = DSParams<T> & {
+	nodes: T[];
+};
 
-class UnionFind {
-	nodes: Data[] = [];
-	constructor(nodes: string[]) {
-		this.nodes = nodes.map((data, index) => ({ data, parentIdx: index }));
+export class UnionFind<T> {
+	nodes: Node<T>[] = [];
+	#nodeToString: UnionFindParams<T>["nodeToString"];
+	constructor(params: UnionFindParams<T>) {
+		this.#nodeToString = params.nodeToString;
+		this.nodes = params.nodes.map((data, index) => ({ data, parentIdx: index }));
 	}
 
 	#getNode(i: number) {
 		if (i < 0 || i >= this.nodes.length) {
 			throw new Error("index out of bounds");
 		}
-		const node = this.nodes[i] as Data;
+		const node = this.nodes[i] as Node<T>;
 		return node;
 	}
 
-	#getParent(i: number): Data {
+	#getParent(i: number): Node<T> {
 		const node = this.#getNode(i);
 		if (node.parentIdx === i) return node;
 		else return this.#getParent(node.parentIdx);
@@ -51,7 +57,7 @@ class UnionFind {
 			const parent = this.#getParent(i);
 			const key = String(parent.data);
 			if (!(key in groups)) groups[key] = { parent: key, nodes: [] };
-			groups[key]?.nodes.push(node.data);
+			groups[key]?.nodes.push(this.#nodeToString(node.data));
 		}
 		return Object.values(groups);
 	}
@@ -62,7 +68,7 @@ class UnionFind {
 			const node = this.#getNode(i);
 			const key = this.nodes[node.parentIdx]?.data as string;
 			if (!(key in groups)) groups[key] = { parent: key, nodes: [] };
-			groups[key]?.nodes.push(node.data);
+			groups[key]?.nodes.push(this.#nodeToString(node.data));
 		}
 		return Object.values(groups);
 	}
@@ -74,7 +80,9 @@ class UnionFind {
 	}
 }
 
-export const unionFind = (nodes: string[] = []) => {
-	const bh = new UnionFind(nodes);
-	return bh;
+export const unionFindString = (nodes: string[]) => {
+	return new UnionFind<string>({
+		nodeToString: (i) => i,
+		nodes,
+	});
 };

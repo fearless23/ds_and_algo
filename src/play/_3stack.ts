@@ -1,9 +1,9 @@
 import { logger } from "../lib/logger.js";
-import { stackWithArray, stackWithSLL } from "../ds/3.Stack/index.js";
+import { stackWithArrayString, stackWithSLLString } from "../ds/3.Stack/index.js";
 
 export const STACK = {
 	STACK_WITH_SLL: () => {
-		const s = stackWithSLL<string>();
+		const s = stackWithSLLString();
 		s.push("Banana");
 		s.push("Grapes");
 		s.print();
@@ -16,7 +16,7 @@ export const STACK = {
 		s.print();
 	},
 	STACK_WITH_ARRAY: () => {
-		const s = stackWithArray();
+		const s = stackWithArrayString();
 		s.push("Banana");
 		s.push("Grapes");
 		s.print();

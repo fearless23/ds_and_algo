@@ -1,5 +1,5 @@
+import { type DSParams } from "../types.js";
 import { logger } from "../../lib/logger.js";
-import { type DSParams, DEFAULT_NODE_TO_STRING } from "../types.js";
 
 class Node<DataType> {
 	data: DataType;
@@ -10,24 +10,25 @@ class Node<DataType> {
 	}
 }
 
+const createNode = <T>(data: T) => new Node(data);
+
+export type SinglyLinkedListParams<T> = DSParams<T>;
+
 export class SinglyLinkedList<T> {
 	head: Node<T> | null = null;
 	tail: Node<T> | null = null;
 	size = 0;
-	#printParams: DSParams<T>;
-	constructor(printParams: DSParams<T>) {
-		this.#printParams = printParams;
+
+	// params
+	#nodeToString: SinglyLinkedListParams<T>["nodeToString"];
+	constructor(params: SinglyLinkedListParams<T>) {
+		this.#nodeToString = params.nodeToString;
 	}
 
 	#init(node: Node<T>) {
 		this.head = node;
 		this.tail = node;
 		this.size = 1;
-	}
-
-	#createNode(data: T) {
-		const new_node = new Node(data);
-		return new_node;
 	}
 
 	#getNodeAtIndex(i: number) {
@@ -43,7 +44,7 @@ export class SinglyLinkedList<T> {
 	}
 
 	#addNodeAfterTail(data: T) {
-		const node = this.#createNode(data);
+		const node = createNode(data);
 		if (this.size === 0) return this.#init(node);
 
 		(this.tail as Node<T>).next = node;
@@ -68,7 +69,7 @@ export class SinglyLinkedList<T> {
 	}
 
 	#addNodeBeforeHead(data: T) {
-		const node = this.#createNode(data);
+		const node = createNode(data);
 		if (this.size === 0) return this.#init(node);
 
 		node.next = this.head;
@@ -95,7 +96,7 @@ export class SinglyLinkedList<T> {
 			throw new Error(`index out of bounds, should be b/w 0 & ${this.size - 1}`);
 		}
 
-		const node = this.#createNode(data);
+		const node = createNode(data);
 		if (this.size === 0) return this.#init(node);
 
 		const prev_node = this.#getNodeAtIndex(index - 1);
@@ -123,25 +124,6 @@ export class SinglyLinkedList<T> {
 		this.size -= 1;
 		return B.data;
 	}
-
-	// #addWithPriority(data: T, compare_function) {
-	// 	const node = this.#createNode(data);
-	// 	if (this.size === 0) return this.#init(node);
-
-	// 	const priority = data.priority;
-	// 	let current_node = this.head;
-	// 	let index = 0;
-	// 	while (current_node) {
-	// 		if (compare_function(priority, current_node.data.priority)) {
-	// 			current_node = null;
-	// 		} else {
-	// 			current_node = current_node.next;
-	// 			index += 1;
-	// 		}
-	// 	}
-	// 	if (index === this.size) return this._addNodeAfterTail(data);
-	// 	else return this._addNodeAtIndex(index, data);
-	// }
 
 	#getNodes() {
 		const nodes = [];
@@ -190,16 +172,17 @@ export class SinglyLinkedList<T> {
 	}
 
 	print() {
-		const { nodeDataToString } = this.#printParams;
-		const nodeData = this.#getNodes().map(nodeDataToString);
+		const nodeData = this.#getNodes().map(this.#nodeToString);
 		logger.info(`SLL: ${nodeData.join(" ---> ")}`);
 	}
 }
 
-export const singlyLinkedList = <T>(params: Partial<DSParams<T>> = {}) => {
-	const sll = new SinglyLinkedList<T>({
-		nodeDataToString: DEFAULT_NODE_TO_STRING,
-		...params,
-	});
+export const singlyLinkedListString = () => {
+	const sll = new SinglyLinkedList<string>({ nodeToString: (i) => i });
+	return sll;
+};
+
+export const singlyLinkedListNumber = () => {
+	const sll = new SinglyLinkedList<number>({ nodeToString: (i) => `${i}` });
 	return sll;
 };

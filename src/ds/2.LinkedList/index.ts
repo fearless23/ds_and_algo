@@ -1,4 +1,17 @@
-export { doublyLinkedList } from "./doublyLinkedList.js";
-export { singlyLinkedList } from "./singlyLinkedList.js";
-export { singlyLinkedListWithPriority } from "./SinglyLinkedListWithPriority.js";
-export type { DataWithPriority } from "./SinglyLinkedListWithPriority.js";
+export {
+	DoublyLinkedList,
+	doublyLinkedListNumber,
+	doublyLinkedListString,
+	type DoublyLinkedListParams,
+} from "./doublyLinkedList.js";
+export {
+	SinglyLinkedList,
+	singlyLinkedListNumber,
+	singlyLinkedListString,
+	type SinglyLinkedListParams,
+} from "./singlyLinkedList.js";
+export {
+	PrioritySinglyLinkedList,
+	prioritySinglyLinkedListNumber,
+	type PrioritySinglyLinkedListParams,
+} from "./prioritySinglyLinkedList.js";

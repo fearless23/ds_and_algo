@@ -1,13 +1,13 @@
 import { logger } from "../../lib/logger.js";
-import { DEFAULT_NODE_TO_STRING, type DSParams } from "../types.js";
-import type { Stack } from "./types.js";
+import type { Stack, DSParams } from "../types.js";
 
-class StackWithArray<T> {
+export type StackWithArrayParams<T> = DSParams<T>;
+export class StackWithArray<T> implements Stack<T> {
 	#stack: T[] = [];
 
-	#printParams: DSParams<T>;
-	constructor(printParams: DSParams<T>) {
-		this.#printParams = printParams;
+	#nodeToString: DSParams<T>["nodeToString"];
+	constructor(params: StackWithArrayParams<T>) {
+		this.#nodeToString = params.nodeToString;
 	}
 
 	push(data: T) {
@@ -32,15 +32,13 @@ class StackWithArray<T> {
 	}
 
 	print() {
-		const data = this.#stack.map(this.#printParams.nodeDataToString);
+		const data = this.#stack.map(this.#nodeToString);
 		logger.info(`STACK_WITH_SLL: (BOTTOM) ${data.join(" -- ")} --> TOP `);
 	}
 }
 
-export const stackWithArray = <T>(params: Partial<DSParams<T>> = {}): Stack<T> => {
-	const stack = new StackWithArray<T>({
-		nodeDataToString: DEFAULT_NODE_TO_STRING,
-		...params,
-	});
-	return stack;
-};
+export const stackWithArrayString = (): Stack<string> =>
+	new StackWithArray<string>({ nodeToString: (i) => i });
+
+export const stackWithArrayNumber = (): Stack<number> =>
+	new StackWithArray<number>({ nodeToString: (i) => `${i}` });

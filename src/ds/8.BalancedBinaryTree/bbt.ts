@@ -1,4 +1,4 @@
-class BinarySearchTree {
+export class BinarySearchTree {
 	constructor(dupAllowed = false) {
 		this.bst = [];
 		this.dupAllowed = dupAllowed;
@@ -46,11 +46,3 @@ class BinarySearchTree {
 		console.log("\n\n");
 	}
 }
-
-const x = new BinarySearchTree();
-x.insertValues([7, 20, 5, 15, 10, 33, 4, 4, 2, 6]);
-x.print();
-const y = new BinarySearchTree();
-y.insertValues([1, 2, 3, 4, 5, 6]);
-// For this kind of insertion, there is Balanced BST`s..
-y.print();

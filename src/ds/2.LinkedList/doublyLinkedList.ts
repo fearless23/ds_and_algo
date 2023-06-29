@@ -1,5 +1,5 @@
 import { logger } from "../../lib/logger.js";
-import { type DSParams, DEFAULT_NODE_TO_STRING } from "../types.js";
+import { type DSParams } from "../types.js";
 
 class Node<DataType> {
 	data: DataType;
@@ -11,25 +11,25 @@ class Node<DataType> {
 		this.prev = null;
 	}
 }
+const createNode = <T>(data: T) => new Node(data);
 
-class DoublyLinkedList<T> {
+export type DoublyLinkedListParams<T> = DSParams<T>;
+
+export class DoublyLinkedList<T> {
 	head: Node<T> | null = null;
 	tail: Node<T> | null = null;
 	size = 0;
-	#printParams: DSParams<T>;
-	constructor(printParams: DSParams<T>) {
-		this.#printParams = printParams;
+
+	// params
+	#nodeToString: DoublyLinkedListParams<T>["nodeToString"];
+	constructor(params: DoublyLinkedListParams<T>) {
+		this.#nodeToString = params.nodeToString;
 	}
 
 	#init(node: Node<T>) {
 		this.head = node;
 		this.tail = node;
 		this.size = 1;
-	}
-
-	#createNode(data: T) {
-		const new_node = new Node(data);
-		return new_node;
 	}
 
 	#getNodeAtIndex(i: number) {
@@ -45,7 +45,7 @@ class DoublyLinkedList<T> {
 	}
 
 	#addNodeAfterTail(data: T) {
-		const node = this.#createNode(data);
+		const node = createNode(data);
 		if (this.size === 0) return this.#init(node);
 
 		(this.tail as Node<T>).next = node;
@@ -71,7 +71,7 @@ class DoublyLinkedList<T> {
 	}
 
 	#addNodeBeforeHead(data: T) {
-		const node = this.#createNode(data);
+		const node = createNode(data);
 		if (this.size === 0) return this.#init(node);
 
 		node.next = this.head;
@@ -100,7 +100,7 @@ class DoublyLinkedList<T> {
 			throw new Error(`index out of bounds, should be b/w 0 & ${this.size - 1}`);
 		}
 
-		const node = this.#createNode(data);
+		const node = createNode(data);
 		if (this.size === 0) return this.#init(node);
 
 		const prev_node = this.#getNodeAtIndex(index - 1);
@@ -183,16 +183,17 @@ class DoublyLinkedList<T> {
 	}
 
 	print() {
-		const { nodeDataToString } = this.#printParams;
-		const nodeData = this.#getNodes().map(nodeDataToString);
+		const nodeData = this.#getNodes().map(this.#nodeToString);
 		logger.info(`DLL: H${nodeData.join(" <--> ")}T`);
 	}
 }
 
-export const doublyLinkedList = <T>(params: Partial<DSParams<T>> = {}) => {
-	const dll = new DoublyLinkedList<T>({
-		nodeDataToString: DEFAULT_NODE_TO_STRING,
-		...params,
-	});
-	return dll;
+export const doublyLinkedListString = () => {
+	const sll = new DoublyLinkedList<string>({ nodeToString: (i) => i });
+	return sll;
+};
+
+export const doublyLinkedListNumber = () => {
+	const sll = new DoublyLinkedList<number>({ nodeToString: (i) => `${i}` });
+	return sll;
 };
