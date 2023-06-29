@@ -1,13 +1,4 @@
 import { logger } from "src/lib/logger.js";
-import type { CompareFunction, DSParams, FindFunction } from "../types.js";
-
-type BinarySearchTreeParams = { duplicateAllowed: boolean };
-
-export type BinarySearchTreeWithArrayParams<T> = DSParams<T> & {
-	duplicateAllowed: boolean;
-	compare: CompareFunction<T>;
-	find: FindFunction<T>;
-};
 
 /**
  * Storing BST as array is very bad for memory size
@@ -26,8 +17,8 @@ export type BinarySearchTreeWithArrayParams<T> = DSParams<T> & {
 export class BinarySearchTreeWithArray {
 	bst: number[] = [];
 	duplicateAllowed: boolean;
-	constructor(params: BinarySearchTreeParams) {
-		this.duplicateAllowed = params.duplicateAllowed;
+	constructor(duplicateAllowed: boolean) {
+		this.duplicateAllowed = duplicateAllowed;
 	}
 	// NOTE: smaller goes left, bigger goes right
 
@@ -69,6 +60,6 @@ export class BinarySearchTreeWithArray {
 }
 
 export const bstWithArray = (duplicateAllowed = false) => {
-	const bst = new BinarySearchTreeWithArray({ duplicateAllowed });
+	const bst = new BinarySearchTreeWithArray(duplicateAllowed);
 	return bst;
 };

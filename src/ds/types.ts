@@ -16,14 +16,6 @@ export type DSParams<T> = {
  */
 export type CompareFunction<T> = (a: T, b: T) => number;
 
-/**
- * Take in some `a` and `b` of tpye `T`
- * Output:
- * - `true` : Found
- * - `false`: Not found
- */
-export type FindFunction<T> = (a: T, b: T) => boolean;
-
 export type OrderType = "PRE_ORDER" | "IN_ORDER" | "POST_ORDER" | "LEVEL_ORDER";
 
 export type Stack<T> = {

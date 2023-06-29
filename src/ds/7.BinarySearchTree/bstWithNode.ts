@@ -1,6 +1,6 @@
 import { logger } from "src/lib/logger.js";
 import { queueWithArray } from "../4.Queue/index.js";
-import type { CompareFunction, DSParams, FindFunction, OrderType } from "../types.js";
+import type { CompareFunction, DSParams, OrderType } from "../types.js";
 
 class Node<T> {
 	data: T;
@@ -15,7 +15,6 @@ const createNode = <T>(data: T) => new Node(data);
 export type BinarySearchTreeParams<T> = DSParams<T> & {
 	duplicateAllowed: boolean;
 	compare: CompareFunction<T>;
-	find: FindFunction<T>;
 };
 
 export class BinarySearchTree<T> {
@@ -24,12 +23,10 @@ export class BinarySearchTree<T> {
 	duplicateAllowed: boolean;
 	#nodeToString: BinarySearchTreeParams<T>["nodeToString"];
 	#compare: CompareFunction<T>;
-	#find: FindFunction<T>;
 	constructor(params: BinarySearchTreeParams<T>) {
 		this.duplicateAllowed = params.duplicateAllowed;
 		this.#compare = params.compare;
 		this.#nodeToString = params.nodeToString;
-		this.#find = params.find;
 	}
 
 	#decideAndInsert(start: Node<T>, data: T) {
@@ -52,11 +49,9 @@ export class BinarySearchTree<T> {
 	}
 
 	#findFrom(start: Node<T>, data: T): Node<T> | null {
-		const found = this.#find(start.data, data);
-		if (found) return start;
-		// 1. pick a direction
-		const dataBigger = this.#compare(data, start.data);
-		const dir = dataBigger ? "right" : "left";
+		const compared = this.#compare(data, start.data);
+		if (compared === 0) return start;
+		const dir = compared > 0 ? "right" : "left";
 		const node = start[dir];
 		if (!node) return null;
 		return this.#findFrom(node, data);
@@ -92,7 +87,6 @@ export class BinarySearchTree<T> {
 			nodeToString: (i) => this.#nodeToString(i.data),
 		});
 		queue.send(start);
-
 		while (queue.peek().size !== 0) {
 			const [node] = queue.take();
 			if (node) nodes.push(node.data);
@@ -147,7 +141,6 @@ export const bstWithNodeString = (duplicateAllowed = false) => {
 		nodeToString: (i) => `${i}`,
 		duplicateAllowed,
 		compare: (a, b) => a.value - b.value,
-		find: (a, b) => a.data === b.data,
 	});
 	return bst;
 };
@@ -156,8 +149,7 @@ export const bstWithNodeNumber = (duplicateAllowed = false) => {
 	const bst = new BinarySearchTree<number>({
 		nodeToString: (i) => `${i}`,
 		duplicateAllowed,
-		compare: (a: number, b: number) => a - b,
-		find: (a: number, b: number) => a === b,
+		compare: (a, b) => a - b,
 	});
 	return bst;
 };
