@@ -1,6 +1,6 @@
 import { logger } from "src/lib/logger.js";
 import type { DSParams, CompareFunction, Queue, DataWithPriority, QueueFS } from "../types.js";
-import { heapVariant, BinaryHeap } from "../5.BinaryHeap/index.js";
+import { heapVariant, BinaryHeap } from "../BinaryHeap/index.js";
 
 export type PriorityQueueWithBinaryHeapParams<T> = DSParams<T> & {
 	compare: CompareFunction<T>;

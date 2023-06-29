@@ -1,5 +1,5 @@
 import { logger } from "src/lib/logger.js";
-import { PrioritySinglyLinkedList } from "../2.LinkedList/index.js";
+import { PrioritySinglyLinkedList } from "../LinkedList/index.js";
 import type { DSParams, Queue, CompareFunction, DataWithPriority, QueueFS } from "../types.js";
 
 export type PriorityQueueWithSLLParams<T> = DSParams<T> & {

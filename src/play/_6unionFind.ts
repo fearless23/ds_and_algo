@@ -1,5 +1,5 @@
 import { logger } from "src/lib/logger.js";
-import { unionFindString } from "../ds/6.UnionFind/index.js";
+import { unionFindString } from "../ds/UnionFind/index.js";
 
 const NODES = {
 	A: 0,

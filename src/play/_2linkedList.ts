@@ -1,4 +1,4 @@
-import { doublyLinkedListNumber, singlyLinkedListNumber } from "../ds/2.LinkedList/index.js";
+import { doublyLinkedListNumber, singlyLinkedListNumber } from "../ds/LinkedList/index.js";
 
 export const LINKED_LIST = {
 	SINGLE_LINKED_LIST: () => {

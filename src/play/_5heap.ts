@@ -1,4 +1,4 @@
-import { heapVariant, binaryHeapNumber as binaryHeap } from "../ds/5.BinaryHeap/index.js";
+import { heapVariant, binaryHeapNumber as binaryHeap } from "../ds/BinaryHeap/index.js";
 
 export const HEAP = {
 	// BINARY_HEAP: () => {

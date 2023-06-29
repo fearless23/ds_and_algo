@@ -1,6 +1,6 @@
 import { logger } from "src/lib/logger.js";
 import type { DSParams, Queue } from "../types.js";
-import { SinglyLinkedList } from "../2.LinkedList/index.js";
+import { SinglyLinkedList } from "../LinkedList/index.js";
 
 export type QueueWithSLLParams<T> = DSParams<T>;
 export class QueueWithSLL<T> {

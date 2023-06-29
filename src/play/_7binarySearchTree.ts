@@ -1,5 +1,5 @@
 import type { OrderType } from "../ds/types.js";
-import { bstWithArray, bstWithNodeNumber } from "../ds/7.BinarySearchTree/index.js";
+import { bstWithArray, bstWithNodeNumber } from "../ds/BinarySearchTree/index.js";
 
 const orders: OrderType[] = ["PRE_ORDER", "IN_ORDER", "POST_ORDER", "LEVEL_ORDER"];
 

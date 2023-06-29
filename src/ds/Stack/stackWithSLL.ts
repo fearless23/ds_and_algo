@@ -1,6 +1,6 @@
 import { logger } from "../../lib/logger.js";
 import type { DSParams, Stack } from "../types.js";
-import { SinglyLinkedList } from "../2.LinkedList/index.js";
+import { SinglyLinkedList } from "../LinkedList/index.js";
 
 export type StackWithSLLParams<T> = DSParams<T>;
 export class StackWithSLL<T> implements Stack<T> {

@@ -1,5 +1,5 @@
 import { logger } from "../lib/logger.js";
-import { stackWithArrayString, stackWithSLLString } from "../ds/3.Stack/index.js";
+import { stackWithArrayString, stackWithSLLString } from "../ds/Stack/index.js";
 
 export const STACK = {
 	STACK_WITH_SLL: () => {

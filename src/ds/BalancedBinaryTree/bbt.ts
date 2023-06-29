@@ -1,30 +1,26 @@
 export class BinarySearchTree {
-	constructor(dupAllowed = false) {
-		this.bst = [];
-		this.dupAllowed = dupAllowed;
-	}
+	bst: number[] = [];
 
-	insert(val) {
+	insert(val: number) {
 		let k = 0;
 		while (this.bst[k]) {
-			const curVal = this.bst[k];
-			if (!this.dupAllowed && val === curVal) break;
+			const curVal = this.bst[k] as number;
+			if (val === curVal) break;
 			k = 2 * k + 1; // GO LEFT
 			if (val > curVal) k += 1; // GO RIGHT
 		}
 		this.bst[k] = val;
 	}
 
-	insertValues(vals) {
-		for (const k of vals) this.insert(k);
+	insertValues(values: number[]) {
+		for (const k of values) this.insert(k);
 	}
 
-	// Complexity, see note 1 in MD File
-	search(val) {
+	search(value: number) {
 		let i = 0;
 		while (this.bst[i]) {
-			if (this.bst[i] === val) break;
-			if (this.bst[i] < val) i = 2 * i + 2;
+			if ((this.bst[i] as number) === value) break;
+			if ((this.bst[i] as number) < value) i = 2 * i + 2;
 			else i = 2 * i + 1;
 		}
 		return !this.bst[i] ? -1 : i;

@@ -1,5 +1,5 @@
 import { logger } from "src/lib/logger.js";
-import { queueWithArray } from "../4.Queue/index.js";
+import { queueWithArray } from "../Queue/index.js";
 import type { CompareFunction, DSParams, OrderType } from "../types.js";
 
 class Node<T> {

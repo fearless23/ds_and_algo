@@ -5,7 +5,7 @@ import {
 	priorityQueueWithBinaryHeapStringFS,
 	queueWithArrayString,
 	queueWithSLLString,
-} from "../ds/4.Queue/index.js";
+} from "../ds/Queue/index.js";
 import { logger } from "../lib/logger.js";
 
 const show = (items: DataWithPriority<string>[]) => items.map((i) => `${i.data}(${i.priority})`);
