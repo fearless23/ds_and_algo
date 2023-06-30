@@ -1,10 +1,20 @@
 import { hashString, normalizeNumber } from "../utils.js";
 import { SinglyLinkedList } from "../LinkedList/index.js";
 
-type Node<T> = { key: string; value: T };
-type Bucket<T> = SinglyLinkedList<Node<T>>;
+type Item<T> = { key: string; value: T; hash: number };
+type Bucket<T> = SinglyLinkedList<Item<T>>;
+
+/**
+ * Convert key to hash, and then into [0, capacity) range
+ */
+export const getIndexOfKey = (key: string, capacity: number) => {
+	const hash = hashString(key);
+	const idx = normalizeNumber(hash, capacity);
+	return { key, hash, idx };
+};
 
 export class HashTableSeperateChaining<T> {
+	size = 0;
 	capacity = 8;
 	maxBucketSize = 0;
 	maxAllowedBucketSize = 5;
@@ -14,9 +24,8 @@ export class HashTableSeperateChaining<T> {
 		this.capacity = capacity;
 	}
 
-	normalizeHash(key: string) {
-		const hash = hashString(key);
-		return normalizeNumber(hash, this.capacity);
+	#getIndexForKey(key: string) {
+		return getIndexOfKey(key, this.capacity);
 	}
 
 	#resizeTable() {
@@ -37,19 +46,19 @@ export class HashTableSeperateChaining<T> {
 
 	#addItem(key: string, value: T) {
 		if (key === "") return false;
-		const idx = this.normalizeHash(key);
+		const { idx, hash } = this.#getIndexForKey(key);
 		const bucket = this.table[idx];
 		if (bucket == null) {
-			const bucket = new SinglyLinkedList<Node<T>>({ nodeToString: (i) => i.key });
+			const bucket = new SinglyLinkedList<Item<T>>({ nodeToString: (i) => i.key });
 			this.maxBucketSize = Math.max(1, this.maxBucketSize);
 			this.table[idx] = bucket;
-			bucket.addTail({ key, value });
+			bucket.addTail({ key, value, hash });
 			return true;
 		} else {
 			// OPTIONAL - find if key exists, only then add
 			const found = bucket.findByValue<string>(key, (node, key) => node.data.key === key);
 			if (found) return false;
-			bucket.addTail({ key, value });
+			bucket.addTail({ key, value, hash });
 			this.maxBucketSize = Math.max(bucket.size, this.maxBucketSize);
 			return true;
 		}
@@ -57,18 +66,28 @@ export class HashTableSeperateChaining<T> {
 
 	add(key: string, value: T) {
 		this.#addItem(key, value);
+		this.size += 1;
 		if (this.maxBucketSize > this.maxAllowedBucketSize) {
 			this.#resizeTable();
 		}
 	}
 
 	get(key: string) {
-		const idx = this.normalizeHash(key);
+		const { idx, hash } = this.#getIndexForKey(key);
 		const bucket = this.table[idx];
 		if (bucket == null) return null;
-		const node = bucket.findByValue<string>(key, (node, key) => node.data.key === key);
+		const node = bucket.findByValue<number>(hash, (node, hash) => node.data.hash === hash);
 		if (node == null) return null;
 		return node.data.value;
+	}
+
+	delete(key: string) {
+		const { idx, hash } = this.#getIndexForKey(key);
+		const bucket = this.table[idx];
+		if (bucket == null) return null;
+		const node = bucket.removeByValue<number>(hash, (node, hash) => node.data.hash === hash);
+		if (node == null) return null;
+		return node.value;
 	}
 }
 

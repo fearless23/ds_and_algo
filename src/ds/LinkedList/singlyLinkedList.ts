@@ -1,22 +1,22 @@
 import { type DSParams } from "../types.js";
 import { logger } from "../../lib/logger.js";
 
-class Node<DataType> {
-	data: DataType;
-	next: Node<DataType> | null;
-	constructor(data: DataType) {
+class SLLNode<T> {
+	data: T;
+	next: SLLNode<T> | null;
+	constructor(data: T) {
 		this.data = data;
 		this.next = null;
 	}
 }
 
-const createNode = <T>(data: T) => new Node(data);
+const createNode = <T>(data: T) => new SLLNode(data);
 
 export type SinglyLinkedListParams<T> = DSParams<T>;
 
 export class SinglyLinkedList<T> {
-	head: Node<T> | null = null;
-	tail: Node<T> | null = null;
+	head: SLLNode<T> | null = null;
+	tail: SLLNode<T> | null = null;
 	size = 0;
 
 	// params
@@ -25,7 +25,7 @@ export class SinglyLinkedList<T> {
 		this.#nodeToString = params.nodeToString;
 	}
 
-	#init(node: Node<T>) {
+	#init(node: SLLNode<T>) {
 		this.head = node;
 		this.tail = node;
 		this.size = 1;
@@ -47,7 +47,7 @@ export class SinglyLinkedList<T> {
 		const node = createNode(data);
 		if (this.size === 0) return this.#init(node);
 
-		(this.tail as Node<T>).next = node;
+		(this.tail as SLLNode<T>).next = node;
 		this.tail = node;
 		this.size += 1;
 	}
@@ -55,7 +55,7 @@ export class SinglyLinkedList<T> {
 	#removeNodeAtTail() {
 		if (this.size === 0) return null;
 
-		const tail = this.tail as Node<T>;
+		const tail = this.tail as SLLNode<T>;
 		const before_tail_node = this.#getNodeAtIndex(this.size - 2);
 		if (!before_tail_node) {
 			this.head = null;
@@ -79,14 +79,14 @@ export class SinglyLinkedList<T> {
 
 	#removeNodeAtHead() {
 		if (this.size === 0) return null;
-		const data = (this.head as Node<T>).data;
+		const data = (this.head as SLLNode<T>).data;
 		if (this.size === 1) {
 			this.head = null;
 			this.tail = null;
 			this.size = 0;
 			return data;
 		}
-		this.head = (this.head as Node<T>).next;
+		this.head = (this.head as SLLNode<T>).next;
 		this.size -= 1;
 		return data;
 	}
@@ -118,8 +118,8 @@ export class SinglyLinkedList<T> {
 		if (index === 0) return this.#removeNodeAtHead();
 		if (index === this.size - 1) return this.#removeNodeAtTail();
 		// Case: A -> B -> C
-		const A = this.#getNodeAtIndex(index - 1) as Node<T>;
-		const B = A.next as Node<T>;
+		const A = this.#getNodeAtIndex(index - 1) as SLLNode<T>;
+		const B = A.next as SLLNode<T>;
 		A.next = B.next;
 		this.size -= 1;
 		return B.data;
@@ -161,7 +161,7 @@ export class SinglyLinkedList<T> {
 		return this.#removeNodeAtIndex(index);
 	}
 
-	findByValue<K>(value: K, finder: (node: Node<T>, value: K) => boolean) {
+	findByValue<K>(value: K, finder: (node: SLLNode<T>, value: K) => boolean) {
 		let pointer = this.head;
 		while (pointer != null) {
 			const found = finder(pointer, value);
@@ -169,6 +169,25 @@ export class SinglyLinkedList<T> {
 			pointer = pointer.next;
 		}
 		return pointer;
+	}
+
+	removeByValue<K>(value: K, finder: (node: SLLNode<T>, value: K) => boolean) {
+		if (this.head == null) return null;
+		const isHead = finder(this.head, value);
+		if (isHead) return this.#removeNodeAtHead();
+		const isTail = finder(this.tail as SLLNode<T>, value);
+		if (isTail) return this.#removeNodeAtTail();
+
+		let pointer = this.head;
+		while (pointer.next != null) {
+			if (finder(pointer.next, value)) break;
+			pointer = pointer.next;
+		}
+		if (pointer == null) return null;
+		const toRemove = pointer.next as SLLNode<T>;
+		pointer.next = toRemove.next;
+		this.size -= 1;
+		return toRemove.data;
 	}
 
 	items() {

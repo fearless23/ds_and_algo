@@ -1,3 +1,6 @@
+/**
+ * Produces a unique integer for a given string
+ */
 export const hashString = (string: string) => {
 	let hash = 0;
 	for (let i = 0; i < string.length; i++) {
@@ -8,6 +11,9 @@ export const hashString = (string: string) => {
 	return hash;
 };
 
+/**
+ * Normalize a number into [ 0, capacity ) range
+ */
 export const normalizeNumber = (i: number, capacity: number) => {
 	return (i & 0x7fffffff) % capacity;
 };
