@@ -36,7 +36,7 @@ export class HashTableSeperateChaining<T> {
 			if (item == null) continue;
 			let pointer = item.head;
 			while (pointer) {
-				newTable.add(pointer.data.key, pointer.data.value);
+				newTable.set(pointer.data.key, pointer.data.value);
 				pointer = pointer.next;
 			}
 		}
@@ -64,7 +64,7 @@ export class HashTableSeperateChaining<T> {
 		}
 	}
 
-	add(key: string, value: T) {
+	set(key: string, value: T) {
 		this.#addItem(key, value);
 		this.size += 1;
 		if (this.maxBucketSize > this.maxAllowedBucketSize) {

@@ -36,31 +36,56 @@ For Scenario1, this is how we use OpenAddressing
 
 
 ## Probing Functions
+newIdx = ( initialIdx + p(x) ) % capacity
+- p() is probing function
+- x is iteration
+- Cycle of a good probing function should be exactly equal to capacity
 
 ### Linear Probing Function
 - Generic linear probing function = ax + b
 - a, b are constants, x is the iteration
 - b do not matter since eventually we will mod with capacity, thus function comes to be `ax` only
-- newIdx = ( idx + a*x ) % capacity
+- newIdx = ( initialIdx + p(x) ) % capacity or ( initialIdx + a*x ) % capacity
 
-Probing iterations (idx=3,capacity=8)
-p#1= newIdx = (3 + a ) % 8
-p#2= newIdx = (3 + 2a ) % 8
-p#3= newIdx = (3 + 3a ) % 8
-p#4= newIdx = (3 + 4a ) % 8
-
-For linear probe to cover entire range of capacity and not get stuck in a smaller loop, value of a & capacity should be co-primes
+**Probing iterations (initialIdx=3,capacity=8)**  
+- p#1= newIdx = ( 3 + a ) % 8  
+- p#2= newIdx = (3 + 2a ) % 8  
+- p#3= newIdx = (3 + 3a ) % 8  
+- p#4= newIdx = (3 + 4a ) % 8  
 
 In above case, 
-if capacity=8, and a=4 - we get loop of { 3 & 7 }
-if capacity=8, and a=17 - we get perfect loop of 0 to 7, covering entire range
-if capacity=8, and a=16 - we get loop {3} only outputting 3
-if capacity=8, and a=7 - we get perfect loop of 0 to 7, covering entire range
+if capacity=8, and a= 4 - we get loop of { 3 & 7 }  
+if capacity=8, and a=17 - we get perfect loop of 0 to 7, covering entire range  
+if capacity=8, and a=16 - we get loop {3} only outputing 3  
+if capacity=8, and a= 7 - we get perfect loop of 0 to 7, covering entire range 
 
-Note1: with a=17, we cover entire range still in a scenario, where array is fully occupied we will stuck in a infinite loop even though entire range is covered, so we should increase capacity before this happens.
+For linear probe to cover entire range of capacity, value of the constant & capacity should be co-primes.  
+
+Note1: with a=17 or 7, we cover entire range from 0 to capacity, but if the array/table is full, we will get an infinite loop of cycle=capacity. To avoid this, increase capacity of your table before it gets full.  
 
 ## To avoid infinite loop or shorter loop
 1. Choose a constant value such that capacity & constant value are co-prime -> Loop = full range
 2. Increase capacity before array is full -> this avoids infinite loop
 
-IMPORTANT: So, let choose capacity to be 2^n and constant=7, then double capacity when array is more than 65% full.
+IMPORTANT: So, lets choose capacity to be 2^n and constant=7, then double capacity when array is more than 65% full.
+
+### Quadratic Probing Function
+generic quadratic function = a*x^2 + b*x + c
+- a, b, c are constants, x is the iteration
+- c do not matter since eventually we will mod with capacity, thus function comes to be `ax^2+bx` only
+- a != 0, else it will be `bx`, which is just linear probing
+- newIdx = ( initialIdx + p(x) ) % capacity or ( initialIdx + a*x^2 + b*x ) % capacity
+
+Probing iterations (idx=3,capacity=8)
+p#1= newIdx = (3 + a + b ) % 8
+p#2= newIdx = (3 + 4a + 2b ) % 8
+p#3= newIdx = (3 + 9a + 3b ) % 8
+p#4= newIdx = (3 + 16a + 4b ) % 8
+
+So, we have to choose a, b such that given capacity=k, we have cycle of k
+Note: For linear probing a & k were co-primes
+
+We are 3 popular quadratic probing functions
+1. a=1,b=0, capacity = any prime number > 3, loadFactor <= 0.5
+2. a=0.5,b=0.5, capacity = any power of 2
+3. a= -1^x,b=0, capacity = any prime congurent to 3 mod 4 (ex: capacity=23,43)

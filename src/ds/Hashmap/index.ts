@@ -3,4 +3,4 @@ export {
 	hashTableSeperateChainingString,
 } from "./hashTableSeperateChaining.js";
 
-export { HashTableOpenAddressing, hashTableLinearProbe } from "./HashTableOpenAddressing.js";
+export { HashTableLinearProbe, HashTableQuadraticProbe } from "./HashTableOpenAddressing.js";
