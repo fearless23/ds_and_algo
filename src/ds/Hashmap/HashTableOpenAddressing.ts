@@ -1,8 +1,8 @@
 import { logger } from "src/lib/logger.js";
-import { hashString, normalizeNumber } from "../utils.js";
+import { hashString, normalizeNumber, hashString2 } from "../utils.js";
 
-type Item<T> = { key: string; value: T; hash: number };
-type ProbeFunction = (i: number) => number;
+type Item<T> = { key: string; value: T; hash: number; hash2?: number };
+type ProbeFunction = (i: number, key?: string) => number;
 
 const DELETE = "DELETE" as const;
 
@@ -120,7 +120,7 @@ class HashTableOpenAddressing<T> {
 			"HashTable: ",
 			this.table
 				.map((i) => {
-					if (i === "DELETE") return "@D";
+					if (i === DELETE) return "@D";
 					if (i == null) return "@E";
 					return i.key;
 				})
@@ -143,6 +143,15 @@ export class HashTableQuadraticProbe<T> extends HashTableOpenAddressing<T> {
 		super({
 			capacity: 8,
 			probe: (x) => 0.5 * Math.pow(x, 2) + 0.5 * x,
+		});
+	}
+}
+
+export class HashTableDoubleHashing<T> extends HashTableOpenAddressing<T> {
+	constructor() {
+		super({
+			capacity: 8,
+			probe: (x, key) => hashString2(key ?? "") * x,
 		});
 	}
 }

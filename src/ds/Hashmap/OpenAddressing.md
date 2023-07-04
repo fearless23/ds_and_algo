@@ -48,10 +48,10 @@ newIdx = ( initialIdx + p(x) ) % capacity
 - newIdx = ( initialIdx + p(x) ) % capacity or ( initialIdx + a*x ) % capacity
 
 **Probing iterations (initialIdx=3,capacity=8)**  
-- p#1= newIdx = ( 3 + a ) % 8  
-- p#2= newIdx = (3 + 2a ) % 8  
-- p#3= newIdx = (3 + 3a ) % 8  
-- p#4= newIdx = (3 + 4a ) % 8  
+- p#1= newIdx = (3 + 1a) % 8  
+- p#2= newIdx = (3 + 2a) % 8  
+- p#3= newIdx = (3 + 3a) % 8  
+- p#4= newIdx = (3 + 4a) % 8  
 
 In above case, 
 if capacity=8, and a= 4 - we get loop of { 3 & 7 }  
@@ -89,3 +89,14 @@ We are 3 popular quadratic probing functions
 1. a=1,b=0, capacity = any prime number > 3, loadFactor <= 0.5
 2. a=0.5,b=0.5, capacity = any power of 2
 3. a= -1^x,b=0, capacity = any prime congurent to 3 mod 4 (ex: capacity=23,43)
+
+
+### Double Hashing Probing Function
+first we find a delta  d = Hash of key mod capacity (here, hash function should be different from original)
+then, we use this d with initialHash as follows
+- newIdx = ( initialIdx + d*x ) % capacity
+
+Double Hashing is like linear probing, except that value of `a` in `ax` is now `d` which is found at runtime.
+We still need to choose second hash function such that we do not get infinite or shorter loop than capacity.
+
+Note: if d = 0, set d = 1 to avoid infinite-loop
