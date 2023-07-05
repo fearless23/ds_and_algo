@@ -37,7 +37,7 @@
 		"test": "vitest run --no-threads",
 		"test:coverage": "vitest run --no-threads --coverage",
 		"test:ui": "vitest --no-threads --coverage --ui",
-		"dev": "tsx dev/index.ts -- --trace-warnings"
+		"dev": "tsx dev/index.ts"
 	},
 	"volta": {
 		"node": "18.16.0",
