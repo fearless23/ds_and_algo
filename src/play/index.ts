@@ -5,7 +5,8 @@ import { HEAP } from "./_5heap.js";
 import { UNION_FIND } from "./_6unionFind.js";
 import { TREE } from "./_7binarySearchTree.js";
 import { HASHMAP } from "./_8hashMap.js";
-import { FT } from "./_9fenwickTree.js";
+import { FENWICK_TREE } from "./_9fenwickTree.js";
+import { SUFFIX_ARRAY } from "./_10suffixArray.js";
 
 export const DATA_STRUCTURES = {
 	...LINKED_LIST,
@@ -15,5 +16,6 @@ export const DATA_STRUCTURES = {
 	...UNION_FIND,
 	...TREE,
 	...HASHMAP,
-	...FT,
+	...FENWICK_TREE,
+	...SUFFIX_ARRAY,
 } as const;

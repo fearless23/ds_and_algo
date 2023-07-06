@@ -3,8 +3,8 @@ import { fenwickTree } from "../ds/FenwickTree/index.js";
 
 const array = [3, 4, -2, 7, 3, 11, 5, -8, -9, 2, 4, -8];
 
-export const FT = {
-	FT: () => {
+export const FENWICK_TREE = {
+	FENWICK_TREE: () => {
 		const a = fenwickTree(array);
 		a.print();
 		logger.debug(a.rangeSum(0, 2));
