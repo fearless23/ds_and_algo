@@ -110,45 +110,45 @@ Step 1: concatenate all `n` string into a single string with the some join char 
 
 
 **Example 1**
-string1: `apple`
-string2: `rat`
-string3: `cat`
+- string1: `apple`  
+- string2: `rat`  
+- string3: `cat`  
 After concatting, `T` = `apple#rat$cat%`
 We choose `#`, `$` and `%` as sentinel, these sentinels can be any char as long they are distinct from each other and smaller (i.e smaller in ASCII char series) than any char in any of the strings.
 
 Now, create the suffix array for `T`
 
 ## Suffixes of T
-0 - apple#rat$cat%
-1 - pple#rat$cat%
-2 - ple#rat$cat%
-3 - le#rat$cat%
-4 - e#rat$cat%
-5 - #rat$cat%
-6 - rat$cat%
-7 - at$cat%
-8 - t$cat%
-9 - $cat%
-10 - cat%
-11 - at%
-12 - t%
-13 - %
+-  0 --> `apple#rat$cat%`
+-  1 --> `pple#rat$cat%`
+-  2 --> `ple#rat$cat%`
+-  3 --> `le#rat$cat%`
+-  4 --> `e#rat$cat%`
+-  5 --> `#rat$cat%`
+-  6 --> `rat$cat%`
+-  7 --> `at$cat%`
+-  8 --> `t$cat%`
+-  9 --> `$cat%`
+- 10 --> `cat%`
+- 11 --> `at%`
+- 12 --> `t%`
+- 13 --> `%`
 
 ## Sorted Suffixes of T
- 5 - #rat$cat%
- 9 - $cat%
-13 - %
- 0 - apple#rat$cat%
- 7 - at$cat%
-11 - at%
-10 - cat%
- 4 - e#rat$cat%
- 3 - le#rat$cat%
- 2 - ple#rat$cat%
- 1 - pple#rat$cat%
- 6 - rat$cat%
- 8 - t$cat%
-12 - t%
+-  5 --> `#rat$cat%`
+-  9 --> `$cat%`
+- 13 --> `%`
+-  0 --> `apple#rat$cat%`
+-  7 --> `at$cat%`
+- 11 --> `at%`
+- 10 --> `cat%`
+-  4 --> `e#rat$cat%`
+-  3 --> `le#rat$cat%`
+-  2 --> `ple#rat$cat%`
+-  1 --> `pple#rat$cat%`
+-  6 --> `rat$cat%`
+-  8 --> `t$cat%`
+- 12 --> `t%`
 
 ## Suffix and LCP array of T
 | Sorted Index | LCP Value | Suffix | Started in word |
@@ -168,47 +168,47 @@ Now, create the suffix array for `T`
 | 12 | 1 |  `t%` | cat
 
 **Example 2**
-string1: `abca`
-string2: `bcad`
-string3: `daca`
-After concatting, T = abca#bcad$daca%
+- string1: `abca`
+- string2: `bcad`
+- string3: `daca`
+- After concatting, T = abca#bcad$daca%
 We choose `#`, `$` and `%` as sentinel, these sentinels can be any char as long they are distinct from each other and smaller (i.e smaller in ASCII char series) than any char in any of the strings.
 
-Now, create the suffix array for `T`
+Now, create the suffix array for `T`  
 
 ## Suffixes of T
- 0 - abca#bcad$daca%
- 1 - bca#bcad$daca%
- 2 - ca#bcad$daca%
- 3 - a#bcad$daca%
- 4 - #bcad$daca%
- 5 - bcad$daca%
- 6 - cad$daca%
- 7 - ad$daca%
- 8 - d$daca%
- 9 - $daca%
-10 - daca%
-11 - aca%
-12 - ca%
-13 - a%
-14 - %
+-  0 --> `abca#bcad$daca%`
+-  1 --> `bca#bcad$daca%`
+-  2 --> `ca#bcad$daca%`
+-  3 --> `a#bcad$daca%`
+-  4 --> `#bcad$daca%`
+-  5 --> `bcad$daca%`
+-  6 --> `cad$daca%`
+-  7 --> `ad$daca%`
+-  8 --> `d$daca%`
+-  9 --> `$daca%`
+- 10 --> `daca%`
+- 11 --> `aca%`
+- 12 --> `ca%`
+- 13 --> `a%`
+- 14 --> `%`
 
 ## Sorted Suffixes of T
- 4 - #bcad$daca%
- 9 - $daca%
-14 - %
- 3 - a#bcad$daca%
-13 - a%
- 0 - abca#bcad$daca%
-11 - aca%
- 7 - ad$daca%
- 1 - bca#bcad$daca%
- 5 - bcad$daca%
- 2 - ca#bcad$daca%
-12 - ca%
- 6 - cad$daca%
- 8 - d$daca%
-10 - daca%
+-  4 --> `#bcad$daca%`
+-  9 --> `$daca%`
+- 14 --> `%`
+-  3 --> `a#bcad$daca%`
+- 13 --> `a%`
+-  0 --> `abca#bcad$daca%`
+- 11 --> `aca%`
+-  7 --> `ad$daca%`
+-  1 --> `bca#bcad$daca%`
+-  5 --> `bcad$daca%`
+-  2 --> `ca#bcad$daca%`
+- 12 --> `ca%`
+-  6 --> `cad$daca%`
+-  8 --> `d$daca%`
+- 10 --> `daca%`
 
 ## Suffix and LCP Array
 | Sorted Index | LCP Value | Suffix | Starts in word |
