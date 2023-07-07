@@ -126,12 +126,11 @@ const rotateLeft = (start) => {
   return node
 }
 
-const rotate = (start, rotateType) => {
-  const dir = rotateType === "right" ? "right":"left";
-  const oppDir = rotateType === "right" ? "left": "right";
+const rotate = (start, dir) => {
+  const oppDir = dir === "right" ? "left": "right";
   const node = start[opp];
   start[opp] = node[dir];
-  node[dir] = start;
+  node[dir] = start; // a,b reverse
   return node
 }
 
@@ -140,3 +139,10 @@ const rotate = (start, rotateType) => {
 ## Parent of starting node ?
 In tree1, if node `A` has a parent P, after rotation `A` has left, right as well as B & P as parent which break binary tree (binary tree nodes have max one parent only). So, we point the Parent P to node `B` now.
 This is easily acheived since we return the new node on top from rotate function, parent can now point to returned node.
+
+## Types of BBST
+- AVL Tree
+- 2-3 Tree
+- AA Tree
+- Scapegoat Tree
+- Red-Black Tree

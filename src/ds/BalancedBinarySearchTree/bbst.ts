@@ -1,19 +1,47 @@
 import { BinarySearchTree, type BinarySearchTreeParams, Node } from "../BinarySearchTree/index.js";
 
 class BalancedBinarySearchTree<T> extends BinarySearchTree<T> {
-	#rotate(start: Node<T>, dir: "left" | "right") {
+	// #balanceFactor = 0;
+
+	#rotateRoot(dir: "left" | "right") {
+		if (!this.root) return null;
 		const oppDir = dir === "right" ? "left" : "right";
-		const node = start[oppDir];
+		const node = this.root[oppDir];
 		if (node == null) return null;
-		start[oppDir] = node[dir];
-		node[dir] = start;
-		return node;
+
+		this.root[oppDir] = node[dir];
+		node[dir] = this.root;
+		this.root = node;
+		console.log(`Tree rotated ${dir}`);
 	}
 
-	balanceRoot(dir: "left" | "right") {
+	#findHeight(start: Node<T> | null = this.root): number {
+		if (!start) return -1;
+		return 1 + Math.max(this.#findHeight(start.left), this.#findHeight(start.right));
+	}
+
+	get balanceFactor() {
+		if (!this.root) return 0;
+		const right = this.#findHeight(this.root.right);
+		const left = this.#findHeight(this.root.left);
+		return right - left;
+	}
+
+	balance() {
 		if (!this.root) return;
-		const newNode = this.#rotate(this.root, dir);
-		if (newNode) this.root = newNode;
+		let bf = this.balanceFactor;
+		while (bf > 1 || bf < -1) {
+			if (bf > 1) this.#rotateRoot("left");
+			else if (bf < -1) this.#rotateRoot("right");
+			bf = this.balanceFactor;
+		}
+	}
+
+	balanceOnce() {
+		if (!this.root) return;
+		const bf = this.balanceFactor;
+		if (bf > 1) this.#rotateRoot("left");
+		else if (bf < -1) this.#rotateRoot("right");
 	}
 }
 

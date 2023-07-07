@@ -1,4 +1,4 @@
 {
-	"type": "UNION_FIND",
+	"type": "AVL_TREE",
 	"payload": {}
 }
