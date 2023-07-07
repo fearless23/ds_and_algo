@@ -1,4 +1,4 @@
-import { logger } from "src/lib/logger.js";
+import { logger } from "../../lib/logger.js";
 import type { DSParams, Queue } from "../types.js";
 import { SinglyLinkedList } from "../LinkedList/index.js";
 

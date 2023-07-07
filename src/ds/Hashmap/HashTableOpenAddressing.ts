@@ -1,4 +1,4 @@
-import { logger } from "src/lib/logger.js";
+import { logger } from "../../lib/logger.js";
 import { hashString, normalizeNumber, hashString2 } from "../utils.js";
 
 type Item<T> = { key: string; value: T; hash: number; hash2?: number };

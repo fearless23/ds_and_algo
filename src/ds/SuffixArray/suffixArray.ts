@@ -1,4 +1,4 @@
-import { logger } from "src/lib/logger.js";
+import { logger } from "../../lib/logger.js";
 
 type Item = { suffix: string; sortedIndex: number; prefix: string; lcp: number };
 

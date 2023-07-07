@@ -1,4 +1,4 @@
-import { logger } from "src/lib/logger.js";
+import { logger } from "../lib/logger.js";
 import { suffixArrayOfString, suffixArrayOfStrings } from "../ds/SuffixArray/index.js";
 
 // const words1 = ["AABC", "BCDC", "BCDE", "CDED"];

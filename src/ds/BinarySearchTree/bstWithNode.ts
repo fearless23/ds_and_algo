@@ -1,8 +1,9 @@
-import { logger } from "src/lib/logger.js";
+import { logger } from "../../lib/logger.js";
+import { drawMermaidGraphBinaryTree } from "../utils.js";
 import { queueWithArray } from "../Queue/index.js";
 import type { CompareFunction, DSParams, OrderType } from "../types.js";
 
-class Node<T> {
+export class Node<T> {
 	data: T;
 	left: Node<T> | null = null;
 	right: Node<T> | null = null;
@@ -101,7 +102,11 @@ export class BinarySearchTree<T> {
 	}
 
 	print() {
-		logger.debug(JSON.stringify(this.root, null, 4));
+		logger.info(JSON.stringify(this.root, null, 4));
+	}
+
+	printGraph() {
+		logger.info(drawMermaidGraphBinaryTree(this.root, this.#nodeToString));
 	}
 
 	getOrder(type: OrderType) {

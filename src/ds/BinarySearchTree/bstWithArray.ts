@@ -1,4 +1,4 @@
-import { logger } from "src/lib/logger.js";
+import { logger } from "../../lib/logger.js";
 
 /**
  * Storing BST as array is very bad for memory size

@@ -1,4 +1,4 @@
-import { logger } from "src/lib/logger.js";
+import { logger } from "../lib/logger.js";
 import { fenwickTree } from "../ds/FenwickTree/index.js";
 
 const array = [3, 4, -2, 7, 3, 11, 5, -8, -9, 2, 4, -8];

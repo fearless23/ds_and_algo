@@ -1,5 +1,6 @@
-import { logger } from "src/lib/logger.js";
+import { logger } from "../../lib/logger.js";
 import type { DSParams } from "../types.js";
+import { insertInMermaidGraph, mermaidPointer } from "../utils.js";
 
 type Node<T> = { data: T; parentIdx: number };
 export type UnionFindParams<T> = DSParams<T> & {
@@ -77,6 +78,19 @@ export class UnionFind<T> {
 		const data = type === "groups" ? this.#groups() : this.#immediateGroups();
 		const content = data.map((i) => `[${i.nodes.join(", ")}] --> ${i.parent}`);
 		logger.info(`UNION_FIND: \n${content.join("\n")}\n`);
+	}
+
+	printGraph(type: "groups" | "immediate" = "groups") {
+		const data = type === "groups" ? this.#groups() : this.#immediateGroups();
+
+		let text = "";
+		for (const { nodes, parent } of data) {
+			for (const node of nodes) {
+				text += `${mermaidPointer(node, parent)}\n`;
+			}
+		}
+		const graph = insertInMermaidGraph(text);
+		logger.info(`UNION_FIND: \n${graph}\n`);
 	}
 }
 

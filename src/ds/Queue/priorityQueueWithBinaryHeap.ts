@@ -1,4 +1,4 @@
-import { logger } from "src/lib/logger.js";
+import { logger } from "../../lib/logger.js";
 import type { DSParams, CompareFunction, Queue, DataWithPriority, QueueFS } from "../types.js";
 import { heapVariant, BinaryHeap } from "../BinaryHeap/index.js";
 

@@ -1,5 +1,6 @@
-import { logger } from "src/lib/logger.js";
+import { logger } from "../../lib/logger.js";
 import type { DSParams, CompareFunction } from "../types.js";
+import { drawMermaidGraphBinaryHeap } from "../utils.js";
 
 export const heapVariant = { MIN: "MIN", MAX: "MAX" } as const;
 type HeapVariant = keyof typeof heapVariant;
@@ -132,6 +133,10 @@ export class BinaryHeap<T> {
 	print() {
 		const nodes = this.#heap.map(this.#nodeToString);
 		logger.info(`Binary Heap: ${nodes.join(", ")}`);
+	}
+
+	printGraph() {
+		logger.info(drawMermaidGraphBinaryHeap(this.#heap, this.#nodeToString));
 	}
 }
 

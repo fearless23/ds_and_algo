@@ -1,4 +1,4 @@
 {
-	"type": "SUFFIX_ARRAY",
+	"type": "UNION_FIND",
 	"payload": {}
 }

@@ -1,4 +1,4 @@
-import { logger } from "src/lib/logger.js";
+import { logger } from "../../lib/logger.js";
 import type { Queue, DSParams } from "../types.js";
 
 export type QueueWithArrayParams<T> = DSParams<T>;

@@ -12,6 +12,7 @@ Consider the string `banana` and all of its sub-strings
 - l=4,c=3: bana, ananm, nana(suffix)
 - l=5,c=2: banan, anana(suffix)
 - l=6,c=1: banana(suffix)
+
 Total Substrings = N(N+1)/2 (i.e sum from `1` to `N`)
 
 ## suffixes of `banana`
@@ -35,12 +36,12 @@ Total Suffixes = `N`
 - l=6: banana -> 0
 
 ## Now, arrange the suffixes lexico-graphically
--      a -> 5
--    ana -> 3
--  anana -> 1
-- banana -> 0
--     na -> 4
--   nana -> 2
+- --------a `->` 5
+- -----ana `->` 3
+- --anana `->` 1
+- banana `->` 0
+- -------na `->` 4
+- ----nana `->` 2
 
 ## Suffix Array
 Now, put the sorted suffixes indices into an array as follows  
