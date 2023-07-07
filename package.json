@@ -27,7 +27,7 @@
 	"private": true,
 	"scripts": {
 		"preinstall": "npx only-allow pnpm",
-		"husky-setup": "husky install",
+		"husky-setup": "husky install && chmod ug+x .husky/*",
 		"lint": "rome check . --apply",
 		"format": "rome format . --write",
 		"fix": "pnpm format && pnpm lint",
