@@ -1,3 +1,3 @@
 # Todos
 
-- AVL Tree pending
+- TODO: AVL Tree pending
