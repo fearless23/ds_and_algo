@@ -1,6 +1,6 @@
 import { logger } from "../../lib/logger.js";
-import { drawMermaidGraphBinaryTree } from "../utils.js";
 import { queueWithArray } from "../Queue/index.js";
+import { drawMermaidGraphBinaryTree } from "../utils.js";
 import type { CompareFunction, DSParams, OrderType } from "../types.js";
 
 export class Node<T> {

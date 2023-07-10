@@ -35,3 +35,5 @@ export type Queue<T> = {
 export type QueueFS<T> = Queue<DataWithPriority<T>> & {
 	sendPriority(data: T, priority: number): void;
 };
+
+export type Direction = "left" | "right";

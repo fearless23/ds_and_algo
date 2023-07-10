@@ -26,7 +26,25 @@ Usually, balancing a Binary Search Tree
 
 To balance a tree means height of tree should be minimum as possible (as close to binary heap/binary tree), but still maintaining the tree invariant or property.
 
-- Tree invariant is same as heap invariant, some property which applies to the tree.
+## Binary Tree Height
+Height of binary tree is number of edges b/w root and furthest leaf
+- Height of leaf node = 0 (because no edges)
+- Height(node) = Max of [`Left subtree height`, `right subtree height`] + 1
+- Height(node) = Max of [`Height(node.left)`, `Height(node.right)` ] + 1
+- Find null node height
+```txt
+leaf node Height = Max of [Height(leaf.left), Height(leaf.right) ] + 1  
+leaf node Height = Max of [Height(null), Height(null) ] + 1  
+leaf node Height = Height(null) + 1  
+0 = Height(null) + 1
+Height(null) = -1 <--important
+```
+- `Height(null) = -1`
+
+> Height of unbalanced 1->2->3->4->5->6 is 5
+
+## Tree Invariant
+- Tree invariant is similar to heap invariant, some property which applies to the tree.
 - To balance a BST, we cleverly use tree-rotations
 
 ## Tree Rotations
@@ -133,11 +151,10 @@ const rotate = (start, dir) => {
   node[dir] = start; // a,b reverse
   return node
 }
-
 ```
 
 ## Parent of starting node ?
-In tree1, if node `A` has a parent P, after rotation `A` has left, right as well as B & P as parent which break binary tree (binary tree nodes have max one parent only). So, we point the Parent P to node `B` now.
+In tree1, if node `A` has a parent P, after rotation `A` has left child, some right child and P as parent which break binary tree (binary tree nodes have max one parent only). So, we point the Parent P to node `B` now.
 This is easily acheived since we return the new node on top from rotate function, parent can now point to returned node.
 
 ## Types of BBST
@@ -146,3 +163,4 @@ This is easily acheived since we return the new node on top from rotate function
 - AA Tree
 - Scapegoat Tree
 - Red-Black Tree
+
