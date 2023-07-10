@@ -1,9 +1,8 @@
 import { BinarySearchTree, type BinarySearchTreeParams, Node } from "../BinarySearchTree/index.js";
+import type { Direction } from "../types.js";
 
 class BalancedBinarySearchTree<T> extends BinarySearchTree<T> {
-	// #balanceFactor = 0;
-
-	#rotateRoot(dir: "left" | "right") {
+	#rotateRoot(dir: Direction) {
 		if (!this.root) return null;
 		const oppDir = dir === "right" ? "left" : "right";
 		const node = this.root[oppDir];
