@@ -25,13 +25,16 @@ export const bubbleSort_readable = (array: number[]) => {
 // Minified version
 export const bubbleSort = (a: number[]) => {
 	// arr sorted in place
+	const swap = (i: number) => {
+		const t = a[i] as number;
+		a[i] = a[i + 1] as number;
+		a[i + 1] = t;
+	};
 	for (let p = 0; p < a.length - 1; p++) {
 		let s = 0;
 		for (let i = 0; i < a.length - p - 1; i++) {
 			if ((a[i] as number) > (a[i + 1] as number)) {
-				const t = a[i] as number;
-				a[i] = a[i + 1] as number;
-				a[i + 1] = t;
+				swap(i);
 				s++;
 			}
 		}

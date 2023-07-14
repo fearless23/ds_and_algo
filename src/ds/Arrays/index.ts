@@ -34,3 +34,10 @@ console.log("array3 length is ", array3.length);
 Using above, we can start creating staticArrays for storing u8, u16,u32 numbers
 in javascript
 */
+
+const buf = Buffer.alloc(8); // 8 byte memory reserved
+buf.write("a", "utf-8"); // a written in first index, a = 97
+console.log(buf); // <Buf 61 00 00 00 00 00 00 00>, 61 is hexadecimal for 97
+console.log(buf.toJSON()); // { type: 'Buffer', data: [97, 0, 0, 0, 0, 0, 0, 0] } // decimal values
+console.log(buf[1]); // 0
+console.log(buf[0]); // 97
