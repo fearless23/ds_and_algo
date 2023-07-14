@@ -13,9 +13,9 @@ Each index in the array can be referenced with a number.
 - Storing and accessing sequential data
 - Temporarily storing objects
 - Used by IO routines as buffers
-- Loopup tables and inverse lookup tables
+- Lookup tables and inverse lookup tables
 - Can be used to return multiples values from a function
-- Used in dynamic programming to cache answers to subproblems.
+- Used in dynamic programming to cache answers to sub-problems.
 
 ### Complexity
 
@@ -40,3 +40,6 @@ Each index in the array can be referenced with a number.
 - Create static array with initial capacity
 - Add elements to static array.
 - Once, its full. Create new static array with double the capacity of existing array and copy elements
+
+
+> Note: Javascript have similar to array kind of data structure and they are dynamic in nature. However, Javascript have ArrayBuffer to have play with array like structures.

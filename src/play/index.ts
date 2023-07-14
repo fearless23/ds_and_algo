@@ -8,6 +8,8 @@ import { HASHMAP } from "./_8hashMap.js";
 import { FENWICK_TREE } from "./_9fenwickTree.js";
 import { SUFFIX_ARRAY } from "./_10suffixArray.js";
 import { BBST } from "./_11balancedBST.js";
+import { BinarySearch } from "./_12binarySearch.js";
+import { Sorting } from "./13-sorting.js";
 
 export const DATA_STRUCTURES = {
 	...LINKED_LIST,
@@ -20,4 +22,7 @@ export const DATA_STRUCTURES = {
 	...FENWICK_TREE,
 	...SUFFIX_ARRAY,
 	...BBST,
+	// Algorithms
+	...BinarySearch,
+	...Sorting,
 } as const;

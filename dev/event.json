@@ -1,4 +1,4 @@
 {
-	"type": "AVL_TREE",
+	"type": "BubbleSort",
 	"payload": {}
 }
