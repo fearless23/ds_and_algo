@@ -10,6 +10,7 @@ import { SUFFIX_ARRAY } from "./_10suffixArray.js";
 import { BBST } from "./_11balancedBST.js";
 import { BinarySearch } from "./_12binarySearch.js";
 import { Sorting } from "./13-sorting.js";
+import { Recursion } from "./14-recursion.js";
 
 export const DATA_STRUCTURES = {
 	...LINKED_LIST,
@@ -25,4 +26,5 @@ export const DATA_STRUCTURES = {
 	// Algorithms
 	...BinarySearch,
 	...Sorting,
+	...Recursion,
 } as const;

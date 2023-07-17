@@ -1,9 +1,14 @@
-import { bubbleSort } from "../algo/Sorting/index.js";
-const arr = [1, 3, 2, 4, 5, 6];
+import { logger } from "src/lib/logger.js";
+import { bubbleSort, quickSort } from "../algo/Sorting/index.js";
+const arr = [9, 3, 7, 4, 69, 420, 42];
 
 export const Sorting = {
 	BubbleSort: () => {
 		bubbleSort(arr);
-		console.log(arr);
+		logger.info(arr);
+	},
+	QuickSort: () => {
+		quickSort(arr);
+		logger.info(arr);
 	},
 };
