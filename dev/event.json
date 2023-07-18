@@ -1,4 +1,4 @@
 {
-	"type": "TRIE",
+	"type": "BASIC_GRAPH",
 	"payload": {}
 }

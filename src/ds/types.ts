@@ -37,3 +37,15 @@ export type QueueFS<T> = Queue<DataWithPriority<T>> & {
 };
 
 export type Direction = "left" | "right";
+
+// type Connection = number; // simply idx of node
+// type Connection = { to: number; weight: string }; // With direction only
+// type Connection = { to: number; weight: string }; // With weight
+// C = Connection
+// Nodes=N[]=["A","B","C"]
+export type Graph<N, C> = {
+	/** Represents nodes in the graph */
+	nodes: N[];
+	/** Represents connections in the graph */
+	connections: C[][];
+};

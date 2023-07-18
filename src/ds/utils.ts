@@ -1,4 +1,4 @@
-import type { NodeToString } from "./types.js";
+import type { Graph, NodeToString } from "./types.js";
 import type { Node as TrieNode } from "./Trie/index.js";
 import type { Node } from "./BinarySearchTree/bstWithNode.js";
 
@@ -101,28 +101,28 @@ export const drawMermaidGraphBinaryTree = <T>(
 	nodeToString: NodeToString<T>,
 ) => {
 	if (!root) return "";
-	const createMermaidGraphBinaryTree = (node: BinaryTreeNode<T>) => {
+	const draw = (node: BinaryTreeNode<T>) => {
 		let text = "";
 		const s = nodeToString(node.data);
 		if (node.left) {
 			const l = nodeToString(node.left.data);
 			text += `${mermaidPointer(s, l)}\n`;
-			text += createMermaidGraphBinaryTree(node.left);
+			text += draw(node.left);
 		}
 		if (node.right) {
 			const r = nodeToString(node.right.data);
 			text += `${mermaidPointer(s, r)}\n`;
-			text += createMermaidGraphBinaryTree(node.right);
+			text += draw(node.right);
 		}
 		return text;
 	};
-	const text = createMermaidGraphBinaryTree(root);
+	const text = draw(root);
 	return insertInMermaidGraph(text);
 };
 
 export const drawMermaidGraphBinaryHeap = <T>(heap: T[], nodeToString: NodeToString<T>) => {
 	if (heap.length === 0) return "";
-	const createMermaidGraphBinaryHeap = (idx: number) => {
+	const draw = (idx: number) => {
 		let text = "";
 		const s = nodeToString(heap[idx] as T);
 		const leftIdx = 2 * idx + 1;
@@ -130,32 +130,51 @@ export const drawMermaidGraphBinaryHeap = <T>(heap: T[], nodeToString: NodeToStr
 		if (heap[leftIdx] != null) {
 			const l = nodeToString(heap[leftIdx] as T);
 			text += `${mermaidPointer(s, l, String(idx), String(leftIdx))}\n`;
-			text += createMermaidGraphBinaryHeap(leftIdx);
+			text += draw(leftIdx);
 		}
 		if (heap[rightIdx] != null) {
 			const r = nodeToString(heap[rightIdx] as T);
 			text += `${mermaidPointer(s, r, String(idx), String(rightIdx))}\n`;
-			text += createMermaidGraphBinaryHeap(rightIdx);
+			text += draw(rightIdx);
 		}
 		return text;
 	};
-	const text = createMermaidGraphBinaryHeap(0);
+	const text = draw(0);
 	return insertInMermaidGraph(text);
 };
 
 export const drawMermaidGraphTrie = (root: TrieNode) => {
-	const createMermaidGraphBinaryTree = (node: TrieNode, level: number) => {
+	const draw = (node: TrieNode, level: number) => {
 		let text = "";
 		const s = node.data;
 		for (const child of node.children) {
 			if (child) {
 				const l = child.data;
 				text += `${mermaidPointerTrie(s, l, node.id, child.id, node.isWord, child.isWord)}\n`;
-				text += createMermaidGraphBinaryTree(child, level + 1);
+				text += draw(child, level + 1);
 			}
 		}
 		return text;
 	};
-	const text = createMermaidGraphBinaryTree(root, 0);
+	const text = draw(root, 0);
+	return insertInMermaidGraph(text);
+};
+
+export const drawMermaidGraphOfGraph = <N, C>(
+	graph: Graph<N, C>,
+	nodeToString: NodeToString<N>,
+	getIndexFromConnection: (connection: C) => number,
+) => {
+	const { nodes, connections: al } = graph;
+	let text = "";
+	for (let i = 0; i < al.length; i++) {
+		const nodeName = nodeToString(nodes[i] as N); // this node connections
+		const connections = al[i] as C[];
+		for (const c of connections) {
+			const nodeIdx = getIndexFromConnection(c);
+			const nodeName2 = nodeToString(nodes[nodeIdx] as N);
+			text += `${mermaidPointer(nodeName, nodeName2)}\n`;
+		}
+	}
 	return insertInMermaidGraph(text);
 };

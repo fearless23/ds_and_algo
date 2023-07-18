@@ -9,6 +9,7 @@ import { FENWICK_TREE } from "./_9fenwickTree.js";
 import { SUFFIX_ARRAY } from "./_10suffixArray.js";
 import { BBST } from "./_11balancedBST.js";
 import { TRIE } from "./11-trie.js";
+import { GRAPH } from "./12-graph.js";
 
 // ALGORITHMS
 import { Searching } from "./12-searching.js";
@@ -27,6 +28,7 @@ export const DATA_STRUCTURES = {
 	...SUFFIX_ARRAY,
 	...BBST,
 	...TRIE,
+	...GRAPH,
 	// Algorithms
 	...Searching,
 	...Sorting,
