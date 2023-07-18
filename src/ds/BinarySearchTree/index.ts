@@ -6,3 +6,4 @@ export {
 	bstWithNodeString,
 	type BinarySearchTreeParams,
 } from "./bstWithNode.js";
+export { Node as BSTNode, bst, printBst, printBstGraph } from "./bstWithNode.min.js";

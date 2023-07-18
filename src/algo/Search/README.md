@@ -75,3 +75,8 @@ Example with array of length(l)
   2. go left(value is smaller): move end pointer to middle-1
   3. go right(value is larger): move start pointer to middle+1
 - Terminal: end < start
+
+
+## BFS and DFS
+Breadth first search - Level by level (or row by row)
+Depth first search - search in one direction(usually left) first and then in another(usually right), then go back to parent.

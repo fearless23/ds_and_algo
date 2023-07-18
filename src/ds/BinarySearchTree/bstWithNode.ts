@@ -50,6 +50,7 @@ export class BinarySearchTree<T> {
 	}
 
 	#findFrom(start: Node<T>, data: T): Node<T> | null {
+		// This is technically pre-order
 		const compared = this.#compare(data, start.data);
 		if (compared === 0) return start;
 		const dir = compared > 0 ? "right" : "left";

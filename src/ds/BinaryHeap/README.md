@@ -18,9 +18,9 @@ B(i=2): data, left(P,2i+1=5), right(Q,2i+2=6)
 
 ## Insert data
 1. Insert at end, 
-2. heapify start from last idx
+2. heap-ify start from last idx
 
 ## Delete data
 1. Go to node
 2. Delete it and replace it with last element
-3. heapify starting at deleted node
+3. heap-ify starting at deleted node

@@ -79,7 +79,7 @@ Lets look at first tree,
 - node B: D < B & E > B
 Thus, order for tree1 is D < B < `E < A` < C
 
-Rotating tree right, should not break this order and if we look at second tree, it doesnot break the order.
+Rotating tree right, should not break this order and if we look at second tree, it does not break the order.
 
 - node B: D < B & A > B
 - node A: E < A & C > A
@@ -155,7 +155,7 @@ const rotate = (start, dir) => {
 
 ## Parent of starting node ?
 In tree1, if node `A` has a parent P, after rotation `A` has left child, some right child and P as parent which break binary tree (binary tree nodes have max one parent only). So, we point the Parent P to node `B` now.
-This is easily acheived since we return the new node on top from rotate function, parent can now point to returned node.
+This is easily achieved since we return the new node on top from rotate function, parent can now point to returned node.
 
 ## Types of BBST
 - AVL Tree

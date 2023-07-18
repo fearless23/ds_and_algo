@@ -1,5 +1,6 @@
-import type { Node } from "./BinarySearchTree/bstWithNode.js";
 import type { NodeToString } from "./types.js";
+import type { Node as TrieNode } from "./Trie/index.js";
+import type { Node } from "./BinarySearchTree/bstWithNode.js";
 
 /**
  * Produces a unique integer for a given string
@@ -66,6 +67,19 @@ export const subBinary = (a: string, b: string) => {
 
 export const mermaidPointer = (a: string, b: string, aId?: string, bId?: string) =>
 	`${aId ?? a}((${a})) --> ${bId ?? b}((${b}))`;
+
+export const mermaidPointerTrie = (
+	a: string,
+	b: string,
+	aId: string,
+	bId: string,
+	aEnd?: boolean,
+	bEnd?: boolean,
+) => {
+	const aText = aEnd ? `${aId}(((${a})))` : `${aId}((${a}))`;
+	const bText = bEnd ? `${bId}(((${b})))` : `${bId}((${b}))`;
+	return `${aText} --> ${bText}`;
+};
 export const insertInMermaidGraph = (text: string) => {
 	return `\`\`\`mermaid
 graph TB;
@@ -126,5 +140,22 @@ export const drawMermaidGraphBinaryHeap = <T>(heap: T[], nodeToString: NodeToStr
 		return text;
 	};
 	const text = createMermaidGraphBinaryHeap(0);
+	return insertInMermaidGraph(text);
+};
+
+export const drawMermaidGraphTrie = (root: TrieNode) => {
+	const createMermaidGraphBinaryTree = (node: TrieNode, level: number) => {
+		let text = "";
+		const s = node.data;
+		for (const child of node.children) {
+			if (child) {
+				const l = child.data;
+				text += `${mermaidPointerTrie(s, l, node.id, child.id, node.isWord, child.isWord)}\n`;
+				text += createMermaidGraphBinaryTree(child, level + 1);
+			}
+		}
+		return text;
+	};
+	const text = createMermaidGraphBinaryTree(root, 0);
 	return insertInMermaidGraph(text);
 };
