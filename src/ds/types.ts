@@ -43,9 +43,9 @@ export type Direction = "left" | "right";
 // type Connection = { to: number; weight: string }; // With weight
 // C = Connection
 // Nodes=N[]=["A","B","C"]
-export type Graph<N, C> = {
+export type Graph<Node, Edge> = {
 	/** Represents nodes in the graph */
-	nodes: N[];
+	nodes: Node[];
 	/** Represents connections in the graph */
-	connections: C[][];
+	edges: Edge[][];
 };
