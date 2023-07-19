@@ -7,6 +7,7 @@ export type GraphDSParams<Node, Edge> = DSParams<Node> & {
 	graph?: Graph<Node, Edge>;
 };
 
+type FindPathParams<Node, V> = { value: V; finder: (node: Node, value: V) => boolean; start?: V };
 class GraphDS<Node, Edge> {
 	graph: Graph<Node, Edge> = {
 		nodes: [],
@@ -26,23 +27,37 @@ class GraphDS<Node, Edge> {
 
 	// NOTE: findByValue - loop over this.graph.nodes to find the node by value
 
-	findPathDFS<V>(params: { value: V; finder: (node: Node, value: V) => boolean; start?: V }) {
-		// To find path, we will start at node and try to find the mentioned node
+	#findPathSetup<V>(params: FindPathParams<Node, V>) {
 		let startIdx = 0;
 		if (params.start) {
 			const t = params.start;
 			startIdx = this.graph.nodes.findIndex((i) => params.finder(i, t));
 		}
-		if (startIdx === -1) return undefined;
+		if (startIdx === -1) return {};
 		const endIdx = this.graph.nodes.findIndex((i) => params.finder(i, params.value));
-		if (endIdx === -1) return undefined;
-		const seen = new Array(this.graph.nodes.length).fill(false);
+		if (endIdx === -1) return {};
+		const seen: boolean[] = new Array(this.graph.nodes.length).fill(false);
 		seen[startIdx] = true;
-		// dfs
-		const dfs = (startIdx: number, path: number[]): number[] | undefined => {
-			const edges = (this.graph.edges[startIdx] as Edge[]).map((c) => this.getIndexFromEdge(c));
+		return { startIdx, endIdx, seen };
+	}
+
+	#idxToNodeName(indices: number[]) {
+		return indices?.map((i) => this.nodeToString(this.graph.nodes[i] as Node));
+	}
+
+	findPathDFS<V>(params: { value: V; finder: (node: Node, value: V) => boolean; start?: V }) {
+		const { seen, startIdx, endIdx } = this.#findPathSetup<V>(params);
+		if (seen == null) return undefined;
+		const path = [startIdx];
+		const dfs = (currIdx: number): number[] | undefined => {
+			const edges = (this.graph.edges[currIdx] as Edge[]).map((c) => this.getIndexFromEdge(c));
+			console.log("looking at", {
+				path: this.#idxToNodeName(path),
+				edges: this.#idxToNodeName(edges),
+			});
 			// find if end is in any of edges
 			if (edges.find((i) => i === endIdx)) {
+				console.log("found end --------------->\n");
 				path.push(endIdx);
 				return path;
 			}
@@ -51,38 +66,46 @@ class GraphDS<Node, Edge> {
 			for (const next of edges) {
 				if (seen[next] === false) {
 					seen[next] = true;
-					const pathFound = dfs(next, [...path, next]);
+					// NOT SHARING PATH
+					// const pathFound = dfs(next, [...path, next]);
+					// if (pathFound) return pathFound;
+					// SHARING PATH
+					path.push(next);
+					const pathFound = dfs(next);
 					if (pathFound) return pathFound;
+					else path.pop();
 				}
 			}
 
 			return undefined;
 		};
-		const path = dfs(startIdx, [startIdx]);
-		return path?.map((i) => this.nodeToString(this.graph.nodes[i] as Node));
+		const _path = dfs(startIdx);
+		return _path && this.#idxToNodeName(_path);
 	}
 
 	findPathBFS<V>(params: { value: V; finder: (node: Node, value: V) => boolean; start?: V }) {
-		// TODO: implement this
-		let startIdx = 0;
-		if (params.start) {
-			const t = params.start;
-			startIdx = this.graph.nodes.findIndex((i) => params.finder(i, t));
-		}
-		if (startIdx === -1) return undefined;
-		const endIdx = this.graph.nodes.findIndex((i) => params.finder(i, params.value));
-		// visit every node in bfs manner, but keep track of what`s been visited...
-		// bfs
+		const { seen, startIdx, endIdx } = this.#findPathSetup<V>(params);
+		if (seen == null) return undefined;
 		const queue: { at: number; path: number[] }[] = [{ at: startIdx, path: [startIdx] }];
+
 		while (queue.length > 0) {
 			const { at, path } = queue.shift() as { at: number; path: number[] };
 			const edges = (this.graph.edges[at] as Edge[]).map((i) => this.getIndexFromEdge(i));
+			console.log("looking at", {
+				path: this.#idxToNodeName(path),
+				edges: this.#idxToNodeName(edges),
+			});
+
 			for (const edge of edges) {
 				if (edge === endIdx) {
+					console.log("Found end-------->");
 					path.push(endIdx);
-					return path?.map((i) => this.nodeToString(this.graph.nodes[i] as Node));
+					return this.#idxToNodeName(path);
 				} else {
-					queue.push({ at: edge, path: [...path, edge] });
+					if (seen[edge] === false) {
+						seen[edge] = true;
+						queue.push({ at: edge, path: [...path, edge] });
+					}
 				}
 			}
 		}

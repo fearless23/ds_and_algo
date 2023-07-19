@@ -3,21 +3,32 @@ import { logger } from "src/lib/logger.js";
 import { drawMermaidGraphOfGraph } from "../utils.js";
 
 type G = Graph<string, number>;
+type Q = { curr: number; path: number[] };
 
 class GraphDS {
 	constructor(public graph: G) {}
 
-	findPathDFS(value: string, start?: string) {
+	#findPathSetup(value: string, start?: string) {
 		let startIdx = 0;
 		if (start) startIdx = this.graph.nodes.findIndex((node) => node === start);
-		if (startIdx === -1) return undefined;
+		if (startIdx === -1) return {};
 		const endIdx = this.graph.nodes.findIndex((i) => i === value);
-		if (endIdx === -1) return undefined;
-
-		const seen = new Array(this.graph.nodes.length).fill(false);
+		if (endIdx === -1) return {};
+		const seen: boolean[] = new Array(this.graph.nodes.length).fill(false);
 		seen[startIdx] = true;
+		return { startIdx, endIdx, seen };
+	}
+
+	#idxToNodeName(indices: number[]) {
+		return indices.map((i) => this.graph.nodes[i] as string);
+	}
+
+	findPathDFS(value: string, start?: string) {
+		const { seen, startIdx, endIdx } = this.#findPathSetup(value, start);
+		if (seen == null) return undefined;
+		const path = [startIdx];
 		// dfs
-		const dfs = (startIdx: number, path: number[]): number[] | undefined => {
+		const dfs = (startIdx: number): number[] | undefined => {
 			const edges = this.graph.edges[startIdx] as number[];
 			for (const next of edges) {
 				if (seen[next]) continue;
@@ -26,34 +37,32 @@ class GraphDS {
 					return path;
 				} else {
 					path.push(next);
-					const pathFound = dfs(next, path);
+					const pathFound = dfs(next);
 					if (pathFound) return pathFound;
 					else path.pop();
 				}
 			}
 			return undefined;
 		};
-		const path = dfs(startIdx, [startIdx]);
-		return path?.map((i) => this.graph.nodes[i] as string);
+		const _path = dfs(startIdx);
+		return _path && this.#idxToNodeName(_path);
 	}
 
-	findPathBFS<V>(value: string, start?: string) {
-		let startIdx = 0;
-		if (start) startIdx = this.graph.nodes.findIndex((node) => node === start);
-		if (startIdx === -1) return undefined;
-		const endIdx = this.graph.nodes.findIndex((i) => i === value);
-		if (endIdx === -1) return undefined;
+	findPathBFS(value: string, start?: string) {
+		const { seen, startIdx, endIdx } = this.#findPathSetup(value, start);
+		if (seen == null) return undefined;
 
-		const queue: { at: number; path: number[] }[] = [{ at: startIdx, path: [startIdx] }];
+		const queue: Q[] = [{ curr: startIdx, path: [startIdx] }];
 		while (queue.length > 0) {
-			const { at, path } = queue.shift() as { at: number; path: number[] };
-			const edges = this.graph.edges[at] as number[];
+			const { curr, path } = queue.shift() as Q;
+			const edges = this.graph.edges[curr] as number[];
 			for (const edge of edges) {
 				if (edge === endIdx) {
 					path.push(endIdx);
-					return path?.map((i) => this.graph.nodes[i] as string);
-				} else {
-					queue.push({ at: edge, path: [...path, edge] });
+					return this.#idxToNodeName(path);
+				} else if (!seen[edge]) {
+					seen[edge] = true;
+					queue.push({ curr: edge, path: [...path, edge] });
 				}
 			}
 		}

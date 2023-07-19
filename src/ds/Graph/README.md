@@ -79,4 +79,100 @@ const graph = [
 ```
 
 ## BFS and DFS on graph
-The general idea of BFS, DFS stays as we have done for trees(binaryTree etc..), the coding would slightly be different as we use adjacency list here instead of node. Since, we can re-visit the already visited node, we might need to keep track of visited in array or hash-map(object).
+- To find a node, simply search nodes array
+- To find a path to node from a starting point we have to traverse the graph with BFS or DFS
+
+## BFS/DFS path on graph
+The general idea of BFS, DFS stays as we have done for trees(binaryTree etc..), we will use recursion for DFS and queue for BFS.
+- We need to keep track of seen nodes since we can return to already seen one (cyclic graphs)
+
+
+## Important point about path
+From a starting point, the path will keep on increasing as we visit more nodes.
+- In BFS, the path branches to no of children
+- IN DFS, the path branches to direction first
+
+### Graph#1
+```mermaid
+graph TB;
+A((A)) --> B((B))
+B((B)) --> C((C))
+B((B)) --> D((C))
+B((B)) --> E((C))
+C((C)) --> G((G))
+C((C)) --> H((H))
+D((D)) --> I((I))
+D((D)) --> J((J))
+E((E)) --> K((K))
+E((E)) --> L((L))
+```
+
+### BFS on Graph#1
+Consider above diagram, here starting at `A` and ends at `L`(search `L`), we have path [`A`]
+- then visit B: new path is [`A`,`B`]
+- then we have 3 children of `B`: now we 3 new paths
+  - path1: [`A`,`B`,`C`]
+  - path2: [`A`,`B`,`D`]
+  - path3: [`A`,`B`,`E`]
+- then C, D, E has 2 children each
+  - path1: [`A`,`B`,`C`,`G`]
+  - path2: [`A`,`B`,`C`,`H`]
+  - path3: [`A`,`B`,`D`,`I`]
+  - path4: [`A`,`B`,`D`,`J`]
+  - path5: [`A`,`B`,`E`,`K`]
+  - path6: [`A`,`B`,`E`,`L`] (found end)
+
+In BFS, we will have  max `n` paths, where n=nodes at a particular level.
+
+### DFS on Graph#1
+- DFS works by recursion, whereas the path for each recursion can be shared.
+
+#### DFS on Graph#1 with individual paths
+- start at A, path1=[A]
+- next is B, path2=[A,B]
+- B has 3 children (C,D,E), 
+  - explore C: path=[...path2,C]
+    - new path=[...path,G] (dead-end)
+    - new path=[...path,H] (dead-end)
+  - explore D: path=[...path2,D]
+    - new path=[...path,I] (dead-end)
+    - new path=[...path,J] (dead-end)
+  - explore E: path=[...path2,E]
+    - new path=[...path,K] (dead-end)
+    - new path=[...path,L] (found & return)
+
+#### DFS on Graph#1 with shared path
+- Here, we only have one path that can be shared, thus saving some memory
+- start at A, path=[A]
+- next is B, path=[A,B] (push B)
+- B has 3 children (C,D,E), 
+  - explore C: path=[A,B,C] (push B)
+    - path=[A,B,C,G] (push G, dead-end & pop G)
+    - path=[A,B,C,H] (push H, dead-end & pop H)
+    - finally, not found pop B
+  - explore D: path=[A,B,D] (push D)
+    - path=[A,B,D,I] (push I, dead-end & pop I)
+    - path=[A,B,D,J] (push J, dead-end & pop J)
+    - finally, not found pop D
+  - explore E: path=[A,B,E] (push E)
+    - path=[A,B,E,K] (push K, dead-end & pop K)
+    - path=[A,B,E,L] (push L, found & return)
+
+## Cyclic
+```mermaid
+graph TB;
+A((A)) --> B((B))
+B((B)) --> C((C))
+B((B)) --> D((C))
+B((B)) --> E((C))
+C((C)) --> G((G))
+C((C)) --> H((H))
+D((D)) --> I((I))
+D((D)) --> J((J))
+E((E)) --> K((K))
+E((E)) --> L((L))
+E((E)) --> D((D))
+```
+In above example, only change in E also points to D.
+- E has 3 children, one is D which is already visited
+- We need to ignore visited node, else infinite loop
