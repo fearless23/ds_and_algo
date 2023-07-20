@@ -3,7 +3,7 @@ import type { DSParams, CompareFunction } from "../types.js";
 import { drawMermaidGraphBinaryHeap } from "../utils.js";
 
 export const heapVariant = { MIN: "MIN", MAX: "MAX" } as const;
-type HeapVariant = keyof typeof heapVariant;
+export type HeapVariant = keyof typeof heapVariant;
 
 const getLeftIndex = (index: number) => 2 * index + 1;
 const getRightIndex = (index: number) => 2 * index + 2;

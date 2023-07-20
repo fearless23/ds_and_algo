@@ -1,6 +1,7 @@
 import { logger } from "src/lib/logger.js";
 import type { Graph } from "../types.js";
-import { drawMermaidGraphOfGraphMin } from "../utils.js";
+import { drawMermaidGraphOfGraphDijkstra } from "../utils.js";
+// import { heapVariant, binaryHeap } from "../BinaryHeap/index.js";
 
 type DijkstraEdge = { to: number; length: number };
 
@@ -19,14 +20,61 @@ class DijkstraDS {
 	}
 
 	findShortestPath(start: number, end: number) {
-		// TODO: implement this
-		return { start, end };
+		this.#checkBounds(start, end);
+		type N = { seen?: boolean; d: number; prev?: number };
+		const nodes: N[] = new Array(this.graph.length).fill(null);
+		nodes[start] = { seen: false, d: 0 };
+		// NOTE: we can keep seen, dist, prev as separate arrays as well
+
+		const pickUnseenAndMin = () => {
+			let minimum = Infinity;
+			let idx = -1;
+			for (let i = 0; i < nodes.length; i++) {
+				if (!nodes[i]) continue;
+				const { seen, d } = nodes[i] as N;
+				if (!seen && d < minimum) {
+					minimum = d;
+					idx = i;
+				}
+			}
+			return idx;
+		};
+
+		let pick = start;
+		while (pick >= 0) {
+			const node = nodes[pick] as N;
+			// add all edges
+			const edges = this.graph[pick] as DijkstraEdge[];
+			for (const { to: next, length } of edges) {
+				const d = length + node.d;
+				const data = { d: length + node.d, idx: next, prev: pick };
+				const current = nodes[next];
+				// if current is not set or d < current.d
+				if (current == null || d < current.d) nodes[next] = data;
+			}
+			// mark node as seen
+			node.seen = true;
+			pick = pickUnseenAndMin();
+		}
+
+		const endNode = nodes[end] as N;
+		if (endNode === null) return { path: undefined, distance: undefined };
+
+		let currNode = endNode;
+		const path = [end];
+		while (currNode !== null) {
+			const prev = currNode.prev as number;
+			if (prev == null) break;
+			path.push(prev);
+			currNode = nodes[prev] as N;
+		}
+		return { path: path.reverse(), distance: (nodes[end] as N).d };
 	}
 
 	printGraph() {
-		const graph = drawMermaidGraphOfGraphMin(this.graph, (i) => i.to);
+		const graph = drawMermaidGraphOfGraphDijkstra(this.graph);
 		logger.info("Graph", graph);
 	}
 }
 
-export const graph = (graph: Graph<DijkstraEdge>) => new DijkstraDS(graph);
+export const dijkstra = (graph: Graph<DijkstraEdge>) => new DijkstraDS(graph);

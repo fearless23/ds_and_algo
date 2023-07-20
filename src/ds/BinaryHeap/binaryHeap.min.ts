@@ -1,17 +1,10 @@
 import { logger } from "../../lib/logger.js";
-import type { DSParams, CompareFunction } from "../types.js";
 import { drawMermaidGraphBinaryHeap } from "../utils.js";
-
-export const heapVariant = { MIN: "MIN", MAX: "MAX" } as const;
-type HeapVariant = keyof typeof heapVariant;
+import { heapVariant, type HeapVariant } from "./binaryHeap.js";
 
 const getLeftIndex = (index: number) => 2 * index + 1;
 const getRightIndex = (index: number) => 2 * index + 2;
 const getParentIndex = (index: number) => Math.ceil(index / 2 - 1);
-export type BinaryHeapParams<T> = DSParams<T> & {
-	heapVariant: HeapVariant;
-	compare: CompareFunction<T>;
-};
 
 class BinaryHeap {
 	// Can be implemented with LinkedList as well
@@ -115,17 +108,31 @@ class BinaryHeap {
 		return found == null ? false : true;
 	}
 
-	remove(value: number) {
-		const index = this.#find(0, value);
-		if (index == null) return false;
+	#removeAtIndex(index: number) {
 		const lastIndex = this.#heap.length - 1;
 		const lastItem = this.#heap.pop() as number;
 		// removal
-		if (index === lastIndex) return true;
+		if (index === lastIndex) return lastItem;
 		this.#heap[index] = lastItem;
 		this.#bubbleUp(index);
 		this.#bubbleDown(index);
+		return lastItem;
+	}
+
+	remove(value: number) {
+		const index = this.#find(0, value);
+		if (index == null) return false;
+		this.#removeAtIndex(index);
 		return true;
+	}
+
+	removeAtIndex(index: number) {
+		if (this.#heap.length === 0) return undefined;
+		const lastIndex = this.#heap.length - 1;
+		if (index < 0 || index > lastIndex) {
+			throw new Error(`index out of bounds, range: [0, ${lastIndex}]`);
+		}
+		return this.#removeAtIndex(index);
 	}
 
 	peek() {

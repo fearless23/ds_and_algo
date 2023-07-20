@@ -68,6 +68,9 @@ export const subBinary = (a: string, b: string) => {
 export const mermaidPointer = (a: string, b: string, aId?: string, bId?: string) =>
 	`${aId ?? a}((${a})) --> ${bId ?? b}((${b}))`;
 
+export const mermaidPointerArrowText = (a: string, b: string, text: string) =>
+	`${a}((${a})) --${text}--> ${b}((${b}))`;
+
 export const mermaidPointerTrie = (
 	a: string,
 	b: string,
@@ -189,6 +192,18 @@ export const drawMermaidGraphOfGraphMin = <Edge>(
 		for (const c of edges) {
 			const nodeIdx = getIndexFromEdge(c);
 			text += `${mermaidPointer(String(i), String(nodeIdx))}\n`;
+		}
+	}
+	return insertInMermaidGraph(text);
+};
+
+export const drawMermaidGraphOfGraphDijkstra = (graph: Graph<{ to: number; length: number }>) => {
+	let text = "";
+	for (let i = 0; i < graph.length; i++) {
+		const edges = graph[i] as { to: number; length: number }[];
+		for (const c of edges) {
+			const nodeIdx = c.to;
+			text += `${mermaidPointerArrowText(String(i), String(nodeIdx), String(c.length))}\n`;
 		}
 	}
 	return insertInMermaidGraph(text);
