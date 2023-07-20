@@ -1,18 +1,8 @@
-import type { Graph } from "src/ds/types.js";
-// import { graphString as makeGraph } from "../ds/Graph/index.js";
-import { graphMin as makeGraph } from "../ds/Graph/index.js";
 import { logger } from "src/lib/logger.js";
+import type { Graph } from "src/ds/types.js";
+import { graphMin as makeGraph } from "../ds/Graph/index.js";
 
 type BasicGraph = Graph<string, number>;
-const finder = (node: string, value: string) => {
-	return node === value;
-};
-
-const _PP1 = {
-	start: "A",
-	value: "J",
-	finder,
-};
 
 const _basicGraphData: BasicGraph = {
 	nodes: ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"],
@@ -34,7 +24,7 @@ const _basicGraphData2: BasicGraph = {
 	nodes: ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K"],
 	edges: [
 		[1], // A
-		[2, 3, 4], // B
+		[4, 2, 3], // B
 		[5, 6], // C
 		[7, 8, 4], // D
 		[9, 10], // E
@@ -47,17 +37,16 @@ const _basicGraphData2: BasicGraph = {
 	],
 };
 
-const _PP2 = {
-	start: "A",
-	value: "K",
-	finder,
-};
-
 export const GRAPH = {
 	BASIC_GRAPH: () => {
 		const g = makeGraph(_basicGraphData2);
-		// g.printGraph();
-		const path = g.findPathDFS(_PP2.value, _PP2.start);
-		logger.info("path", path);
+		g.printGraph();
+		const bfs = g.findPathBFS("A", "K");
+		const dfs = g.findPathDFS("A", "K");
+		logger.info("paths", { bfs, dfs });
+
+		const bfs$ = g.printBFS("A");
+		const dfs$ = g.printDFS("A");
+		logger.info("paths", { bfs: bfs$, dfs: dfs$ });
 	},
 };

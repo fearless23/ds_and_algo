@@ -108,9 +108,10 @@ E((E)) --> L((L))
 ```
 
 ### BFS on Graph#1
-Consider above diagram, here starting at `A` and ends at `L`(search `L`), we have path [`A`]
+Consider above diagram, here starting at `A` and ends at `L`(search `L`), 
+- start at A: path is [`A`]
 - then visit B: new path is [`A`,`B`]
-- then we have 3 children of `B`: now we 3 new paths
+- then we have 3 children of `B`: now we 3 new paths in queue
   - path1: [`A`,`B`,`C`]
   - path2: [`A`,`B`,`D`]
   - path3: [`A`,`B`,`E`]
@@ -123,6 +124,22 @@ Consider above diagram, here starting at `A` and ends at `L`(search `L`), we hav
   - path6: [`A`,`B`,`E`,`L`] (found end)
 
 In BFS, we will have  max `n` paths, where n=nodes at a particular level.
+
+### BFS on Graph#1 (shared path)
+Consider above diagram, here starting at `A` and ends at `L`(search `L`)
+- with seen array, we also have prev array 
+- prev Array: [null,null,null]
+- prev Array lists parent of a current node
+- start at A: prev[0]=null (as no parent of A)
+- then visit B: prev[1]=0 (since A is parent of B)
+- then we have 3 children of `B`:
+  - B is parent of `C`,`D`,`E`
+  - prev[2]=1, prev[3]=1, prev[4]=1
+- then C, D, E has 2 children each
+  - prev[G is 6]=2, prev[H is 7]=2
+  - prev[I is 6]=3, prev[J is 7]=3
+  - prev[K is 6]=4, prev[L is 7]=4 (found end)
+- once, we found end, we walk the prev array
 
 ### DFS on Graph#1
 - DFS works by recursion, whereas the path for each recursion can be shared.

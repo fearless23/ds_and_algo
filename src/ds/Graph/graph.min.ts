@@ -3,16 +3,14 @@ import { logger } from "src/lib/logger.js";
 import { drawMermaidGraphOfGraph } from "../utils.js";
 
 type G = Graph<string, number>;
-type Q = { curr: number; path: number[] };
 
 class GraphDS {
 	constructor(public graph: G) {}
 
-	#findPathSetup(value: string, start?: string) {
-		let startIdx = 0;
-		if (start) startIdx = this.graph.nodes.findIndex((node) => node === start);
+	#findPathSetup(start: string, end: string) {
+		const startIdx = this.graph.nodes.findIndex((node) => node === start);
 		if (startIdx === -1) return {};
-		const endIdx = this.graph.nodes.findIndex((i) => i === value);
+		const endIdx = this.graph.nodes.findIndex((i) => i === end);
 		if (endIdx === -1) return {};
 		const seen: boolean[] = new Array(this.graph.nodes.length).fill(false);
 		seen[startIdx] = true;
@@ -23,8 +21,50 @@ class GraphDS {
 		return indices.map((i) => this.graph.nodes[i] as string);
 	}
 
-	findPathDFS(value: string, start?: string) {
-		const { seen, startIdx, endIdx } = this.#findPathSetup(value, start);
+	printBFS(start: string) {
+		const startIdx = this.graph.nodes.findIndex((i) => i === start);
+		if (startIdx === -1) return undefined;
+		const seen: boolean[] = new Array(this.graph.nodes.length).fill(false);
+		seen[startIdx] = true;
+		const queue: number[] = [startIdx];
+		const order = [];
+		while (queue.length > 0) {
+			const at = queue.shift() as number;
+			order.push(at);
+			const edges = this.graph.edges[at] as number[];
+			for (const edge of edges) {
+				if (seen[edge] === false) {
+					seen[edge] = true;
+					queue.push(edge);
+				}
+			}
+		}
+		return this.#idxToNodeName(order);
+	}
+
+	printDFS(start: string) {
+		const startIdx = this.graph.nodes.findIndex((i) => i === start);
+		if (startIdx === -1) return undefined;
+		const seen: boolean[] = new Array(this.graph.nodes.length).fill(false);
+		seen[startIdx] = true;
+
+		const order: number[] = [];
+		const dfs = (currIdx: number) => {
+			order.push(currIdx);
+			const edges = this.graph.edges[currIdx] as number[];
+			for (const next of edges) {
+				if (seen[next] === false) {
+					seen[next] = true;
+					dfs(next);
+				}
+			}
+		};
+		dfs(startIdx);
+		return this.#idxToNodeName(order);
+	}
+
+	findPathDFS(start: string, end: string) {
+		const { seen, startIdx, endIdx } = this.#findPathSetup(start, end);
 		if (seen == null) return undefined;
 		const path = [startIdx];
 		// dfs
@@ -48,24 +88,39 @@ class GraphDS {
 		return _path && this.#idxToNodeName(_path);
 	}
 
-	findPathBFS(value: string, start?: string) {
-		const { seen, startIdx, endIdx } = this.#findPathSetup(value, start);
+	findPathBFS(start: string, end: string) {
+		const { seen, startIdx, endIdx } = this.#findPathSetup(start, end);
 		if (seen == null) return undefined;
+		const prev = new Array(seen.length).fill(null);
+		const queue: number[] = [startIdx];
 
-		const queue: Q[] = [{ curr: startIdx, path: [startIdx] }];
 		while (queue.length > 0) {
-			const { curr, path } = queue.shift() as Q;
-			const edges = this.graph.edges[curr] as number[];
+			const at = queue.shift() as number;
+			const edges = this.graph.edges[at] as number[];
+
 			for (const edge of edges) {
+				prev[edge] = at;
 				if (edge === endIdx) {
-					path.push(endIdx);
-					return this.#idxToNodeName(path);
-				} else if (!seen[edge]) {
-					seen[edge] = true;
-					queue.push({ curr: edge, path: [...path, edge] });
+					break;
+				} else {
+					if (seen[edge] === false) {
+						seen[edge] = true;
+						queue.push(edge);
+					}
 				}
 			}
 		}
+
+		if (prev[endIdx] === null) return undefined;
+
+		let curr = endIdx;
+		const path = [];
+		while (prev[curr] !== null) {
+			path.unshift(curr);
+			curr = prev[curr];
+		}
+		path.unshift(startIdx);
+		return this.#idxToNodeName(path);
 	}
 
 	printGraph() {
