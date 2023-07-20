@@ -1,52 +1,68 @@
 import { logger } from "src/lib/logger.js";
 import type { Graph } from "src/ds/types.js";
-import { graphMin as makeGraph } from "../ds/Graph/index.js";
+import { graphMin as makeGraphMin } from "../ds/Graph/index.js";
+import { graphString as makeGraphString } from "../ds/Graph/index.js";
 
-type BasicGraph = Graph<string, number>;
+type BasicGraph = Graph<number>;
+type Data = { nodes: string[]; graph: BasicGraph };
 
-const _basicGraphData: BasicGraph = {
-	nodes: ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"],
-	edges: [
-		[1], // A
-		[2], // B
-		[5, 4], // C
-		[0, 1], // D
-		[6], // E
-		[3], // F
-		[7], // G
-		[8], // H
-		[9], // I
-		[], // J
-	],
-};
-
-const _basicGraphData2: BasicGraph = {
-	nodes: ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K"],
-	edges: [
-		[1], // A
-		[4, 2, 3], // B
-		[5, 6], // C
-		[7, 8, 4], // D
-		[9, 10], // E
-		[], // F
-		[], // G
-		[], // H
-		[], // I
-		[], // J
-		[], // K
-	],
-};
+const DATA: Data[] = [
+	{
+		nodes: ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"],
+		graph: [
+			[1], // 0
+			[2], // 1
+			[5, 4], // 2
+			[0, 1], // 3
+			[6], // 4
+			[3], // 5
+			[7], // 6
+			[8], // 7
+			[9], // 8
+			[], // 9
+		],
+	},
+	{
+		nodes: ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K"],
+		graph: [
+			[1], // 0
+			[4, 2, 3], // 1
+			[5, 6], // 2
+			[7, 8, 4], // 3
+			[9, 10], // 4
+			[], // 5
+			[], // 6
+			[], // 7
+			[], // 8
+			[], // 9
+			[], // 10
+		],
+	},
+];
 
 export const GRAPH = {
 	BASIC_GRAPH: () => {
-		const g = makeGraph(_basicGraphData2);
+		const { graph, nodes } = DATA[1] as Data;
+		const g = makeGraphString(graph, nodes);
 		g.printGraph();
-		const bfs = g.findPathBFS("A", "K");
-		const dfs = g.findPathDFS("A", "K");
+		const bfs = g.findPathBFS2({ startIdx: 0, endIdx: 10 });
+		const dfs = g.findPathDFS2({ startIdx: 0, endIdx: 10 });
 		logger.info("paths", { bfs, dfs });
 
-		const bfs$ = g.printBFS("A");
-		const dfs$ = g.printDFS("A");
+		const bfs$ = g.printBFS(0);
+		const dfs$ = g.printDFS(0);
+		logger.info("paths", { bfs: bfs$, dfs: dfs$ });
+	},
+	GRAPH_MIN: () => {
+		const { graph } = DATA[1] as Data;
+		const g = makeGraphMin(graph);
+		g.printGraph();
+		const bfs = g.findPathBFS(0, 10);
+		const dfs = g.findPathDFS(0, 10);
+		logger.info("paths", { bfs, dfs });
+
+		const bfs$ = g.printBFS(0);
+		const dfs$ = g.printDFS(0);
 		logger.info("paths", { bfs: bfs$, dfs: dfs$ });
 	},
 };

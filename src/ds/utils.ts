@@ -161,19 +161,34 @@ export const drawMermaidGraphTrie = (root: TrieNode) => {
 };
 
 export const drawMermaidGraphOfGraph = <Node, Edge>(
-	graph: Graph<Node, Edge>,
+	graph: Graph<Edge>,
+	nodes: Node[],
 	nodeToString: NodeToString<Node>,
 	getIndexFromEdge: (edge: Edge) => number,
 ) => {
-	const { nodes, edges: al } = graph;
 	let text = "";
-	for (let i = 0; i < al.length; i++) {
+	for (let i = 0; i < graph.length; i++) {
 		const nodeName = nodeToString(nodes[i] as Node); // this node connections
-		const edges = al[i] as Edge[];
+		const edges = graph[i] as Edge[];
 		for (const c of edges) {
 			const nodeIdx = getIndexFromEdge(c);
 			const nodeName2 = nodeToString(nodes[nodeIdx] as Node);
 			text += `${mermaidPointer(nodeName, nodeName2)}\n`;
+		}
+	}
+	return insertInMermaidGraph(text);
+};
+
+export const drawMermaidGraphOfGraphMin = <Edge>(
+	graph: Graph<Edge>,
+	getIndexFromEdge: (edge: Edge) => number,
+) => {
+	let text = "";
+	for (let i = 0; i < graph.length; i++) {
+		const edges = graph[i] as Edge[];
+		for (const c of edges) {
+			const nodeIdx = getIndexFromEdge(c);
+			text += `${mermaidPointer(String(i), String(nodeIdx))}\n`;
 		}
 	}
 	return insertInMermaidGraph(text);

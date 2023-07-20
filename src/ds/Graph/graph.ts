@@ -4,61 +4,69 @@ import { drawMermaidGraphOfGraph } from "../utils.js";
 
 export type GraphDSParams<Node, Edge> = DSParams<Node> & {
 	getIndexFromEdge: (edge: Edge) => number;
-	graph?: Graph<Node, Edge>;
+	graph: Graph<Edge>;
+	nodes: Node[];
 };
 
-type FindPathParams<Node, V> = { value: V; finder: (node: Node, value: V) => boolean; start: V };
+type FindPathParams = { endIdx: number; startIdx: number };
 class GraphDS<Node, Edge> {
-	graph: Graph<Node, Edge> = {
-		nodes: [],
-		edges: [],
-	};
+	nodes: Node[] = [];
+	graph: Graph<Edge> = [];
 	nodeToString: NodeToString<Node>;
 	getIndexFromEdge: (connection: Edge) => number;
+	// getWeightFromEdge: (connection: Edge) => number;
+	size = 0;
 	constructor(params: GraphDSParams<Node, Edge>) {
-		if (params.graph) this.graph = params.graph;
+		this.graph = params.graph;
+		this.nodes = params.nodes;
+		this.size = this.graph.length;
 		this.nodeToString = params.nodeToString;
 		this.getIndexFromEdge = params.getIndexFromEdge;
 	}
 	addNodeAndConnections(node: Node, connections: Edge[]) {
-		this.graph.nodes.push(node);
-		this.graph.edges.push(connections);
+		this.nodes.push(node);
+		this.graph.push(connections);
+		this.size += 1;
 	}
 
 	// NOTE: findByValue - loop over this.graph.nodes to find the node by value
 
-	#findPathSetup<V>(params: FindPathParams<Node, V>) {
-		const startIdx = this.graph.nodes.findIndex((i) => params.finder(i, params.start));
-		if (startIdx === -1) return {};
-		const endIdx = this.graph.nodes.findIndex((i) => params.finder(i, params.value));
-		if (endIdx === -1) return {};
-		const seen: boolean[] = new Array(this.graph.nodes.length).fill(false);
+	#findPathSetup({ startIdx, endIdx }: FindPathParams) {
+		this.#outOfBounds(startIdx);
+		this.#outOfBounds(endIdx);
+		if (startIdx === endIdx) throw new Error("start and end are same");
+		const seen: boolean[] = new Array(this.nodes.length).fill(false);
 		seen[startIdx] = true;
 		return { startIdx, endIdx, seen };
 	}
 
 	#idxToNodeName(indices: number[]) {
-		return indices?.map((i) => this.nodeToString(this.graph.nodes[i] as Node));
+		return indices?.map((i) => this.nodeToString(this.nodes[i] as Node));
 	}
 
 	#idxEdges(idx: number) {
-		return (this.graph.edges[idx] as Edge[]).map((c) => this.getIndexFromEdge(c));
+		return (this.graph[idx] as Edge[]).map((c) => this.getIndexFromEdge(c));
+	}
+
+	#outOfBounds(idx: number) {
+		if (idx < 0 || idx >= this.nodes.length) {
+			throw new Error(`idx:${idx} out of bounds`);
+		}
 	}
 
 	/**
 	 * Prints nodes in BFS order start as some node
 	 */
-	printBFS<V>(params: Omit<FindPathParams<Node, V>, "value">) {
-		const startIdx = this.graph.nodes.findIndex((i) => params.finder(i, params.start));
-		if (startIdx === -1) return undefined;
-		const seen: boolean[] = new Array(this.graph.nodes.length).fill(false);
+	printBFS(startIdx: number) {
+		this.#outOfBounds(startIdx);
+		const seen: boolean[] = new Array(this.graph.length).fill(false);
 		seen[startIdx] = true;
 		const queue: number[] = [startIdx];
 		const order = [];
 		while (queue.length > 0) {
 			const at = queue.shift() as number;
 			order.push(at); // visited
-			const edges = (this.graph.edges[at] as Edge[]).map((i) => this.getIndexFromEdge(i));
+			const edges = this.#idxEdges(at);
 			for (const edge of edges) {
 				if (seen[edge] === false) {
 					seen[edge] = true;
@@ -72,10 +80,9 @@ class GraphDS<Node, Edge> {
 	/**
 	 * Prints nodes in DFS order start as some node
 	 */
-	printDFS<V>(params: Omit<FindPathParams<Node, V>, "value">) {
-		const startIdx = this.graph.nodes.findIndex((i) => params.finder(i, params.start));
-		if (startIdx === -1) return undefined;
-		const seen: boolean[] = new Array(this.graph.nodes.length).fill(false);
+	printDFS(startIdx: number) {
+		this.#outOfBounds(startIdx);
+		const seen: boolean[] = new Array(this.graph.length).fill(false);
 		seen[startIdx] = true;
 
 		const order: number[] = [];
@@ -97,11 +104,10 @@ class GraphDS<Node, Edge> {
 	 * find path from start node to some end node, searching in DFS manner
 	 * - It uses individual paths
 	 */
-	findPathDFS1<V>(params: FindPathParams<Node, V>) {
-		const { seen, startIdx, endIdx } = this.#findPathSetup<V>(params);
-		if (seen == null) return undefined;
+	findPathDFS1(params: FindPathParams) {
+		const { seen, startIdx, endIdx } = this.#findPathSetup(params);
 		const dfs = (currIdx: number, path: number[]): number[] | undefined => {
-			const edges = (this.graph.edges[currIdx] as Edge[]).map((c) => this.getIndexFromEdge(c));
+			const edges = this.#idxEdges(currIdx);
 			console.log("looking at", {
 				path: this.#idxToNodeName(path),
 				edges: this.#idxToNodeName(edges),
@@ -132,12 +138,11 @@ class GraphDS<Node, Edge> {
 	 * find path from start node to some end node, searching in DFS manner
 	 * - It uses global path, thus uses less memory
 	 */
-	findPathDFS2<V>(params: FindPathParams<Node, V>) {
-		const { seen, startIdx, endIdx } = this.#findPathSetup<V>(params);
-		if (seen == null) return undefined;
+	findPathDFS2(params: FindPathParams) {
+		const { seen, startIdx, endIdx } = this.#findPathSetup(params);
 		const path = [startIdx];
 		const dfs = (currIdx: number): number[] | undefined => {
-			const edges = (this.graph.edges[currIdx] as Edge[]).map((c) => this.getIndexFromEdge(c));
+			const edges = this.#idxEdges(currIdx);
 			console.log("looking at", {
 				path: this.#idxToNodeName(path),
 				edges: this.#idxToNodeName(edges),
@@ -170,14 +175,13 @@ class GraphDS<Node, Edge> {
 	 * find path from start node to some end node, searching in BFS manner
 	 * - It uses individual paths, thus uses more memory
 	 */
-	findPathBFS1<V>(params: FindPathParams<Node, V>) {
-		const { seen, startIdx, endIdx } = this.#findPathSetup<V>(params);
-		if (seen == null) return undefined;
+	findPathBFS1(params: FindPathParams) {
+		const { seen, startIdx, endIdx } = this.#findPathSetup(params);
 		const queue: { at: number; path: number[] }[] = [{ at: startIdx, path: [startIdx] }];
 
 		while (queue.length > 0) {
 			const { at, path } = queue.shift() as { at: number; path: number[] };
-			const edges = (this.graph.edges[at] as Edge[]).map((i) => this.getIndexFromEdge(i));
+			const edges = this.#idxEdges(at);
 			console.log("looking at", {
 				path: this.#idxToNodeName(path),
 				edges: this.#idxToNodeName(edges),
@@ -202,17 +206,16 @@ class GraphDS<Node, Edge> {
 	 * find path from start node to some end node, searching in BFS manner
 	 * - It uses prev array to keep track of parent, thus uses less memory
 	 */
-	findPathBFS2<V>(params: FindPathParams<Node, V>) {
-		const { seen, startIdx, endIdx } = this.#findPathSetup<V>(params);
-		if (seen == null) return undefined;
+	findPathBFS2(params: FindPathParams) {
+		const { seen, startIdx, endIdx } = this.#findPathSetup(params);
 		const prev = new Array(seen.length).fill(null);
 		const queue: number[] = [startIdx];
 
 		while (queue.length > 0) {
 			const at = queue.shift() as number;
-			const edges = (this.graph.edges[at] as Edge[]).map((i) => this.getIndexFromEdge(i));
+			const edges = this.#idxEdges(at);
 			console.log("looking at", {
-				at: this.nodeToString(this.graph.nodes[at] as Node),
+				at: this.nodeToString(this.nodes[at] as Node),
 				edges: this.#idxToNodeName(edges),
 			});
 
@@ -235,19 +238,19 @@ class GraphDS<Node, Edge> {
 		let curr = endIdx;
 		const path = [];
 		while (prev[curr] !== null) {
-			path.unshift(curr);
+			path.push(curr);
 			curr = prev[curr];
 		}
-		return path;
+		path.push(startIdx);
+		return this.#idxToNodeName(path.reverse());
 	}
 
 	print() {
-		const data = this.graph.nodes.map((node, index) => {
-			const connections = this.graph.edges[index] as Edge[];
+		const data = this.nodes.map((node, index) => {
 			const nodeName = this.nodeToString(node);
-			const connectionNames = connections?.map((c) => {
-				const idx = this.getIndexFromEdge(c);
-				return this.nodeToString(this.graph.nodes[idx] as Node);
+			const connections = this.#idxEdges(index);
+			const connectionNames = connections.map((idx) => {
+				return this.nodeToString(this.nodes[idx] as Node);
 			});
 			return [nodeName, connectionNames];
 		});
@@ -255,7 +258,12 @@ class GraphDS<Node, Edge> {
 	}
 
 	printGraph() {
-		const graph = drawMermaidGraphOfGraph(this.graph, this.nodeToString, this.getIndexFromEdge);
+		const graph = drawMermaidGraphOfGraph(
+			this.graph,
+			this.nodes,
+			this.nodeToString,
+			this.getIndexFromEdge,
+		);
 		logger.info("Graph", graph);
 	}
 }
@@ -265,9 +273,10 @@ export const graph = <N, C>(params: GraphDSParams<N, C>) => {
 };
 
 // nodes are strings and connections as number index
-export const graphString = (graph: Graph<string, number>) => {
+export const graphString = (graph: Graph<number>, nodes: string[]) => {
 	return new GraphDS({
 		graph,
+		nodes,
 		getIndexFromEdge: (i) => i,
 		nodeToString: (i) => i,
 	});

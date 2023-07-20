@@ -1,37 +1,30 @@
-import type { Graph } from "../types.js";
 import { logger } from "src/lib/logger.js";
-import { drawMermaidGraphOfGraph } from "../utils.js";
-
-type G = Graph<string, number>;
+import type { Graph } from "../types.js";
+import { drawMermaidGraphOfGraphMin } from "../utils.js";
 
 class GraphDS {
-	constructor(public graph: G) {}
+	constructor(public graph: Graph<number>) {}
 
-	#findPathSetup(start: string, end: string) {
-		const startIdx = this.graph.nodes.findIndex((node) => node === start);
-		if (startIdx === -1) return {};
-		const endIdx = this.graph.nodes.findIndex((i) => i === end);
-		if (endIdx === -1) return {};
-		const seen: boolean[] = new Array(this.graph.nodes.length).fill(false);
-		seen[startIdx] = true;
-		return { startIdx, endIdx, seen };
+	#outOfBounds(idx: number) {
+		if (idx < 0 || idx >= this.graph.length) throw new Error(`idx:${idx} out of bounds`);
 	}
 
-	#idxToNodeName(indices: number[]) {
-		return indices.map((i) => this.graph.nodes[i] as string);
+	#checkBounds(startIdx: number, endIdx: number) {
+		this.#outOfBounds(startIdx);
+		this.#outOfBounds(endIdx);
+		if (startIdx === endIdx) throw new Error("start and end are same");
 	}
 
-	printBFS(start: string) {
-		const startIdx = this.graph.nodes.findIndex((i) => i === start);
-		if (startIdx === -1) return undefined;
-		const seen: boolean[] = new Array(this.graph.nodes.length).fill(false);
+	printBFS(startIdx: number) {
+		this.#outOfBounds(startIdx);
+		const seen: boolean[] = new Array(this.graph.length).fill(false);
 		seen[startIdx] = true;
 		const queue: number[] = [startIdx];
 		const order = [];
 		while (queue.length > 0) {
 			const at = queue.shift() as number;
 			order.push(at);
-			const edges = this.graph.edges[at] as number[];
+			const edges = this.graph[at] as number[];
 			for (const edge of edges) {
 				if (seen[edge] === false) {
 					seen[edge] = true;
@@ -39,19 +32,18 @@ class GraphDS {
 				}
 			}
 		}
-		return this.#idxToNodeName(order);
+		return order;
 	}
 
-	printDFS(start: string) {
-		const startIdx = this.graph.nodes.findIndex((i) => i === start);
-		if (startIdx === -1) return undefined;
-		const seen: boolean[] = new Array(this.graph.nodes.length).fill(false);
+	printDFS(startIdx: number) {
+		this.#outOfBounds(startIdx);
+		const seen: boolean[] = new Array(this.graph.length).fill(false);
 		seen[startIdx] = true;
 
 		const order: number[] = [];
 		const dfs = (currIdx: number) => {
 			order.push(currIdx);
-			const edges = this.graph.edges[currIdx] as number[];
+			const edges = this.graph[currIdx] as number[];
 			for (const next of edges) {
 				if (seen[next] === false) {
 					seen[next] = true;
@@ -60,20 +52,21 @@ class GraphDS {
 			}
 		};
 		dfs(startIdx);
-		return this.#idxToNodeName(order);
+		return order;
 	}
 
-	findPathDFS(start: string, end: string) {
-		const { seen, startIdx, endIdx } = this.#findPathSetup(start, end);
-		if (seen == null) return undefined;
-		const path = [startIdx];
+	findPathDFS(start: number, end: number) {
+		this.#checkBounds(start, end);
+		const seen: boolean[] = new Array(this.graph.length).fill(false);
+		seen[start] = true;
+		const path = [start];
 		// dfs
 		const dfs = (startIdx: number): number[] | undefined => {
-			const edges = this.graph.edges[startIdx] as number[];
+			const edges = this.graph[startIdx] as number[];
 			for (const next of edges) {
 				if (seen[next]) continue;
-				if (next === endIdx) {
-					path.push(endIdx);
+				if (next === end) {
+					path.push(end);
 					return path;
 				} else {
 					path.push(next);
@@ -84,23 +77,23 @@ class GraphDS {
 			}
 			return undefined;
 		};
-		const _path = dfs(startIdx);
-		return _path && this.#idxToNodeName(_path);
+		return dfs(start);
 	}
 
-	findPathBFS(start: string, end: string) {
-		const { seen, startIdx, endIdx } = this.#findPathSetup(start, end);
-		if (seen == null) return undefined;
+	findPathBFS(start: number, end: number) {
+		this.#checkBounds(start, end);
+		const seen: boolean[] = new Array(this.graph.length).fill(false);
+		seen[start] = true;
 		const prev = new Array(seen.length).fill(null);
-		const queue: number[] = [startIdx];
+		const queue: number[] = [start];
 
 		while (queue.length > 0) {
 			const at = queue.shift() as number;
-			const edges = this.graph.edges[at] as number[];
+			const edges = this.graph[at] as number[];
 
 			for (const edge of edges) {
 				prev[edge] = at;
-				if (edge === endIdx) {
+				if (edge === end) {
 					break;
 				} else {
 					if (seen[edge] === false) {
@@ -111,26 +104,22 @@ class GraphDS {
 			}
 		}
 
-		if (prev[endIdx] === null) return undefined;
+		if (prev[end] === null) return undefined;
 
-		let curr = endIdx;
+		let curr = end;
 		const path = [];
 		while (prev[curr] !== null) {
-			path.unshift(curr);
+			path.push(curr);
 			curr = prev[curr];
 		}
-		path.unshift(startIdx);
-		return this.#idxToNodeName(path);
+		path.push(start);
+		return path.reverse();
 	}
 
 	printGraph() {
-		const graph = drawMermaidGraphOfGraph(
-			this.graph,
-			(i) => i,
-			(i) => i,
-		);
+		const graph = drawMermaidGraphOfGraphMin(this.graph, (i) => i);
 		logger.info("Graph", graph);
 	}
 }
 
-export const graph = (graph: G) => new GraphDS(graph);
+export const graph = (graph: Graph<number>) => new GraphDS(graph);

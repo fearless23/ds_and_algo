@@ -79,18 +79,25 @@ const graph = [
 ```
 
 ## BFS and DFS on graph
-- To find a node, simply search nodes array
-- To find a path to node from a starting point we have to traverse the graph with BFS or DFS
+- 1. Find: To find a node, simply search nodes array
+- 2. Print: Starting from a node print all nodes in BFS or DFS manner
+- 3. Path: To find a path to node from a starting point we have to traverse the graph with BFS or DFS and keep track of path
+
+## BFS/DFS print
+- BFS: similar to what we done with tree using queue
+- DFS: similar to what we done with tree using recursion
+- DFS: pre-order, post-order can be done, in-order do not make much sense as a node can have multiple children (unlike in a tree node has 2 children)
 
 ## BFS/DFS path on graph
 The general idea of BFS, DFS stays as we have done for trees(binaryTree etc..), we will use recursion for DFS and queue for BFS.
 - We need to keep track of seen nodes since we can return to already seen one (cyclic graphs)
+- we need to keep track of path in some manner
 
 
 ## Important point about path
-From a starting point, the path will keep on increasing as we visit more nodes.
-- In BFS, the path branches to no of children
-- IN DFS, the path branches to direction first
+From a starting point, the number of distinct paths will keep on increasing as we visit more nodes.
+- In BFS, the path branches proportional to no of children
+- IN DFS, the path branches to some direction first and go as deep as possible
 
 ### Graph#1
 ```mermaid
@@ -109,9 +116,10 @@ E((E)) --> L((L))
 
 ### BFS on Graph#1
 Consider above diagram, here starting at `A` and ends at `L`(search `L`), 
+- keep a seen array and mark seen[idx]=true for any visited node
 - start at A: path is [`A`]
 - then visit B: new path is [`A`,`B`]
-- then we have 3 children of `B`: now we 3 new paths in queue
+- then we have 3 children of `B`: now we have 3 new paths in queue
   - path1: [`A`,`B`,`C`]
   - path2: [`A`,`B`,`D`]
   - path3: [`A`,`B`,`E`]
@@ -121,17 +129,17 @@ Consider above diagram, here starting at `A` and ends at `L`(search `L`),
   - path3: [`A`,`B`,`D`,`I`]
   - path4: [`A`,`B`,`D`,`J`]
   - path5: [`A`,`B`,`E`,`K`]
-  - path6: [`A`,`B`,`E`,`L`] (found end)
+  - path6: [`A`,`B`,`E`,`L`] (found end, return this path)
 
 In BFS, we will have  max `n` paths, where n=nodes at a particular level.
 
 ### BFS on Graph#1 (shared path)
 Consider above diagram, here starting at `A` and ends at `L`(search `L`)
 - with seen array, we also have prev array 
-- prev Array: [null,null,null]
-- prev Array lists parent of a current node
-- start at A: prev[0]=null (as no parent of A)
-- then visit B: prev[1]=0 (since A is parent of B)
+- prev Array: [null(A),null(B),null(C)]
+- Any index of prev Array holds `prev` of current node
+- start at A: prev[0]=null (as no prev for A)
+- then visit B: prev[1]=0 (since A(0) is prev for B)
 - then we have 3 children of `B`:
   - B is parent of `C`,`D`,`E`
   - prev[2]=1, prev[3]=1, prev[4]=1
@@ -193,3 +201,7 @@ E((E)) --> D((D))
 In above example, only change in E also points to D.
 - E has 3 children, one is D which is already visited
 - We need to ignore visited node, else infinite loop
+
+## Multiple paths
+- If we have multiple paths to a node, we can continue finding paths and then at the end return the smallest path.
+- Look for dijkstra
